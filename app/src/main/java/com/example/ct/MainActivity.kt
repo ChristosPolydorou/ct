@@ -22,13 +22,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // Check for location permission
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
             // Request the permission
             ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                PERMISSIONS_REQUEST_CODE);
+                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                PERMISSIONS_REQUEST_CODE)
         } else {
             // Permission has already been granted
             // Start the WalkReminderService
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
     private fun startWalkReminderService() {
         // Get the AlarmManager service
         // Get the AlarmManager service
-        val alarmManager = getSystemService<Any>(Context.ALARM_SERVICE) as AlarmManager
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         // Create a PendingIntent for the notification
 

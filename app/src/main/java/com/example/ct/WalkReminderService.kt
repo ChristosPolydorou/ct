@@ -10,11 +10,15 @@ import android.telecom.Call
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 import java.util.*
+
 
 class WalkReminderService : Service() {
     private var reminderTimer: Timer? = null
@@ -53,21 +57,20 @@ class WalkReminderService : Service() {
 
     private fun startWeatherUpdates() {
         val client = OkHttpClient()
-        val request: DownloadManager.Request = Builder()
+        val request = Request.Builder()
             .url("http://api.openweathermap.org/data/2.5/weather?q=LosAngeles,us&appid=" + OPEN_WEATHER_MAP_API_KEY)
             .build()
         weatherTimer = Timer()
         weatherTimer!!.schedule(object : TimerTask() {
             override fun run() {
-                client.newCall(request).enqueue(object : Callback() {
-                    fun onFailure(call: Call?, e: IOException) {
+                client.newCall(request).enqueue(object : Callback {
+                    override fun onFailure(call: okhttp3.Call, e: IOException) {
                         e.printStackTrace()
                     }
 
-                    @Throws(IOException::class)
-                    fun onResponse(call: Call?, response: Response) {
+                    override fun onResponse(call: okhttp3.Call, response: Response) {
                         try {
-                            val json = JSONObject(response.body().string())
+                            val json = JSONObject(response.body?.string())
                             val temperature: Double = json.getJSONObject("main").getDouble("temp")
                             val isSunny = json.getJSONArray("weather").getJSONObject(0)
                                 .getString("main") == "Clear"
@@ -98,7 +101,7 @@ class WalkReminderService : Service() {
                         applicationContext
                     )
                     if (ActivityCompat.checkSelfPermission(
-                            this,
+                            applicationContext,
                             Manifest.permission.POST_NOTIFICATIONS
                         ) != PackageManager.PERMISSION_GRANTED
                     ) {
