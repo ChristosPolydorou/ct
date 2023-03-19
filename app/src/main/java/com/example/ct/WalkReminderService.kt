@@ -2,14 +2,16 @@ package com.example.ct
 
 import android.Manifest
 import android.app.*
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.IBinder
-import android.telecom.Call
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -20,23 +22,14 @@ import java.io.IOException
 import java.util.*
 
 
+// Handle all notifications
 class WalkReminderService : Service() {
-    private var reminderTimer: Timer? = null
-    private var weatherTimer: Timer? = null
+    private var reminderTimer: Timer = Timer()
+    private var weatherTimer: Timer = Timer()
     private var isWalking = false
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
-        startWeatherUpdates()
-        startReminderTimer()
-    }
-
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        return START_STICKY
-    }
-
-    override fun onBind(intent: Intent): IBinder? {
-        return null
     }
 
     private fun createNotificationChannel() {
@@ -55,13 +48,38 @@ class WalkReminderService : Service() {
         manager.createNotificationChannel(channel)
     }
 
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+
+        // Check for location permission
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            // Notify by weather
+            startWeatherUpdates()
+            startReminderTimer()
+
+            // Notify by location
+
+            // Notify by time
+            notifyByTime()
+
+        }
+        return START_STICKY
+    }
+
+    override fun onBind(intent: Intent): IBinder? {
+        return null
+    }
+
+
     private fun startWeatherUpdates() {
+
         val client = OkHttpClient()
         val request = Request.Builder()
             .url("http://api.openweathermap.org/data/2.5/weather?q=LosAngeles,us&appid=" + OPEN_WEATHER_MAP_API_KEY)
             .build()
-        weatherTimer = Timer()
-        weatherTimer!!.schedule(object : TimerTask() {
+//        weatherTimer = Timer()
+        weatherTimer.schedule(object : TimerTask() {
             override fun run() {
                 client.newCall(request).enqueue(object : Callback {
                     override fun onFailure(call: okhttp3.Call, e: IOException) {
@@ -70,7 +88,8 @@ class WalkReminderService : Service() {
 
                     override fun onResponse(call: okhttp3.Call, response: Response) {
                         try {
-                            val json = JSONObject(response.body?.string())
+                            val responseBody = response.body
+                            val json = JSONObject(responseBody?.string())
                             val temperature: Double = json.getJSONObject("main").getDouble("temp")
                             val isSunny = json.getJSONArray("weather").getJSONObject(0)
                                 .getString("main") == "Clear"
@@ -85,13 +104,15 @@ class WalkReminderService : Service() {
     }
 
     private fun startReminderTimer() {
-        reminderTimer = Timer()
-        reminderTimer!!.schedule(object : TimerTask() {
+//        reminderTimer = Timer()
+        reminderTimer.schedule(object : TimerTask() {
             override fun run() {
                 if (isWalking) {
+                    val activityIntent = Intent(applicationContext, MainActivity::class.java)
                     val notification: Notification = NotificationCompat.Builder(
                         applicationContext, CHANNEL_ID
-                    ) //.setSmallIcon(R.drawable.ic_walk)
+                    )
+                        .setSmallIcon(R.drawable.ic_launcher_foreground)
                         .setContentTitle("Take a walk!")
                         .setContentText("The weather is nice, go for a walk!")
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -120,6 +141,29 @@ class WalkReminderService : Service() {
         }, 0, REMINDER_INTERVAL.toLong())
     }
 
+    private fun notifyByTime(){
+
+        // Get the AlarmManager service
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        // Create a PendingIntent for the notification
+        val notificationIntent = Intent(this, WalkReminderReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, 0)
+
+
+        // Set the notification to trigger at 5 PM every day
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = System.currentTimeMillis()
+        calendar[Calendar.HOUR_OF_DAY] = 17
+        calendar[Calendar.MINUTE] = 0
+        calendar[Calendar.SECOND] = 0
+
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP, calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY, pendingIntent
+        )
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         stopWeatherUpdates()
@@ -127,13 +171,13 @@ class WalkReminderService : Service() {
     }
 
     private fun stopWeatherUpdates() {
-        weatherTimer!!.cancel()
-        weatherTimer!!.purge()
+        weatherTimer.cancel()
+        weatherTimer.purge()
     }
 
     private fun stopReminderTimer() {
-        reminderTimer!!.cancel()
-        reminderTimer!!.purge()
+        reminderTimer.cancel()
+        reminderTimer.purge()
     }
 
     companion object {
