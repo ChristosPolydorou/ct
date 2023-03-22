@@ -1,4 +1,4 @@
-package com.example.ct
+/*package com.example.ct
 
 import android.Manifest
 import android.app.*
@@ -27,6 +27,7 @@ class WalkReminderService : Service() {
     private var reminderTimer: Timer = Timer()
     private var weatherTimer: Timer = Timer()
     private var isWalking = false
+
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
@@ -103,6 +104,10 @@ class WalkReminderService : Service() {
         }, 0, WEATHER_UPDATE_INTERVAL.toLong())
     }
 
+    private fun checkUserCharacteristics(){
+        //TODO implement checks which kind of user the user is
+    }
+
     private fun startReminderTimer() {
 //        reminderTimer = Timer()
         reminderTimer.schedule(object : TimerTask() {
@@ -114,7 +119,7 @@ class WalkReminderService : Service() {
                     )
                         .setSmallIcon(R.drawable.ic_launcher_foreground)
                         .setContentTitle("Take a walk!")
-                        .setContentText("The weather is nice, go for a walk!")
+                        .setContentText("Let's go for a walk!")
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setAutoCancel(true)
                         .build()
@@ -148,14 +153,15 @@ class WalkReminderService : Service() {
 
         // Create a PendingIntent for the notification
         val notificationIntent = Intent(this, WalkReminderReceiver::class.java)
+        notificationIntent.setAction("time")
         val pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, 0)
 
 
         // Set the notification to trigger at 5 PM every day
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
-        calendar[Calendar.HOUR_OF_DAY] = 17
-        calendar[Calendar.MINUTE] = 0
+        calendar[Calendar.HOUR_OF_DAY] = 11//17
+        calendar[Calendar.MINUTE] = 35 //0
         calendar[Calendar.SECOND] = 0
 
         alarmManager.setRepeating(
@@ -187,4 +193,4 @@ class WalkReminderService : Service() {
         private const val REMINDER_INTERVAL = 30 * 60 * 1000 // 30 minutes
         private const val WEATHER_UPDATE_INTERVAL = 5 * 60 * 1000 // 5 minutes
     }
-}
+}*/
