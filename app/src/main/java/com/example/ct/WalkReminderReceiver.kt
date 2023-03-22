@@ -1,4 +1,4 @@
-package com.example.ct
+/*package com.example.ct
 
 import android.Manifest
 import android.R
@@ -12,14 +12,43 @@ import androidx.core.app.NotificationCompat
 
 
 class WalkReminderReceiver : BroadcastReceiver() {
+    private var facilitator = false //high motivation, low ability
+    private var signal = true //high ability, high motivation
+    //private var spark = false //high ability, low motivation
+
     override fun onReceive(context: Context, intent: Intent) {
         // Build and display the notification
-        val builder: NotificationCompat.Builder = NotificationCompat.Builder(context, "Walk Reminder Channel")
-            .setSmallIcon(R.drawable.ic_lock_idle_alarm)
-            .setContentTitle("Take a walk!")
-            .setContentText("It's time to take a walk.")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        var notText = ""
+        if (intent.action == "weather") {
+            if (facilitator) {
+                notText =
+                    "The conditions outside are perfect, let's use this chance and take an easy walk!"
+            } else if (signal) {
+                notText = "The weather is amazing! Let's go for a walk!"
+            } else {
+                notText =
+                    "Let's make use of these amazing weather conditions and get some steps in!"
+            }
+        } else if (intent.action == "time"){
+            if (facilitator) {
+                notText =
+                    "It's 5pm. Maybe you can get some extra steps in before you settle onto the couch?"
+            } else if (signal) {
+                notText = "It's 5pm. This is a reminder that you can surpass yourself and get some extra steps in!"
+            } else {
+                notText =
+                    "It's 5pm. Let's get some extra steps in before you settle in for the day!"
+            }
+        }
+
+        val builder: NotificationCompat.Builder =
+            NotificationCompat.Builder(context, "Walk Reminder Channel")
+                .setSmallIcon(R.drawable.ic_lock_idle_alarm)
+                .setContentTitle("Take a walk!")
+                .setContentText(notText)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.POST_NOTIFICATIONS
@@ -37,3 +66,4 @@ class WalkReminderReceiver : BroadcastReceiver() {
         notificationManager.notify(1, builder.build())
     }
 }
+*/
