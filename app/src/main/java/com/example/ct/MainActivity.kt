@@ -7,6 +7,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import android.os.Build
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -35,8 +36,10 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        val serviceIntent = Intent(this, WalkReminderService::class.java)
-        startService(serviceIntent)
+        createNotificationChannel()
+
+        /*val serviceIntent = Intent(this, WalkReminderService::class.java)
+        startService(serviceIntent)*/
 
 //        // Get a Calendar instance for the current time
 //        val calendar: Calendar = Calendar.getInstance()
@@ -67,7 +70,21 @@ class MainActivity : AppCompatActivity() {
 //        )
     }
 
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Take a Walk Channel"
+            val descriptionText = "Notifications for taking a walk"
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel(NotificationManager.CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
 
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+}
 //    private fun startWalkReminderService() {
 //    }
 

@@ -1,4 +1,4 @@
-/*package com.example.ct
+package com.example.ct
 
 import android.Manifest
 import android.app.*
@@ -193,4 +193,4 @@ class WalkReminderService : Service() {
         private const val REMINDER_INTERVAL = 30 * 60 * 1000 // 30 minutes
         private const val WEATHER_UPDATE_INTERVAL = 5 * 60 * 1000 // 5 minutes
     }
-}*/
+}

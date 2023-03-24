@@ -1,4 +1,4 @@
-/*package com.example.ct
+package com.example.ct
 
 import android.Manifest
 import android.R
@@ -66,4 +66,3 @@ class WalkReminderReceiver : BroadcastReceiver() {
         notificationManager.notify(1, builder.build())
     }
 }
-*/
