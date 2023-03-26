@@ -64,5 +64,6 @@ class WalkReminderReceiver : BroadcastReceiver() {
             return
         }
         notificationManager.notify(1, builder.build())
+
     }
 }

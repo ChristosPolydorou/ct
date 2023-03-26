@@ -4,12 +4,24 @@ package com.example.ct
 class Cache {
     private val cacheMap = mutableMapOf<String, Any>()
 
-    fun <T> get(key: String): T? {
+    init {
+        // Use uniform keys
+        cacheMap["weatherGood"] = false
+        cacheMap["FivePm"] = false
+        cacheMap["steps"] = 0
+        cacheMap["target"] = 0
+    }
+
+    fun <T> get(key: String): T {
         @Suppress("UNCHECKED_CAST")
-        return cacheMap[key] as? T
+        return cacheMap[key] as T
     }
 
     fun <T : Any> put(key: String, value: T) {
+        cacheMap[key] = value
+    }
+
+    fun <T : Any> set(key: String, value: T) {
         cacheMap[key] = value
     }
 

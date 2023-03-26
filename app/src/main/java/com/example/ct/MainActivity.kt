@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
             val name = "Take a Walk Channel"
             val descriptionText = "Notifications for taking a walk"
             val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(NotificationManager.CHANNEL_ID, name, importance).apply {
+            val channel = NotificationChannel(MyNotificationManager.CHANNEL_ID, name, importance).apply {
                 description = descriptionText
             }
 
@@ -85,7 +85,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
-//    private fun startWalkReminderService() {
-//    }
 
-}

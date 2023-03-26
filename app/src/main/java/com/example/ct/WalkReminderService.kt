@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -22,11 +21,10 @@ import java.io.IOException
 import java.util.*
 
 
-// Handle all notifications
 class WalkReminderService : Service() {
     private var reminderTimer: Timer = Timer()
     private var weatherTimer: Timer = Timer()
-    private var isWalking = false
+//    private var isWalking = false
 
     override fun onCreate() {
         super.onCreate()
@@ -56,8 +54,8 @@ class WalkReminderService : Service() {
             == PackageManager.PERMISSION_GRANTED
         ) {
             // Notify by weather
-            startWeatherUpdates()
-            startReminderTimer()
+//            startWeatherUpdates()
+//            startReminderTimer()
 
             // Notify by location
 
@@ -73,78 +71,78 @@ class WalkReminderService : Service() {
     }
 
 
-    private fun startWeatherUpdates() {
-
-        val client = OkHttpClient()
-        val request = Request.Builder()
-            .url("http://api.openweathermap.org/data/2.5/weather?q=LosAngeles,us&appid=" + OPEN_WEATHER_MAP_API_KEY)
-            .build()
-//        weatherTimer = Timer()
-        weatherTimer.schedule(object : TimerTask() {
-            override fun run() {
-                client.newCall(request).enqueue(object : Callback {
-                    override fun onFailure(call: okhttp3.Call, e: IOException) {
-                        e.printStackTrace()
-                    }
-
-                    override fun onResponse(call: okhttp3.Call, response: Response) {
-                        try {
-                            val responseBody = response.body
-                            val json = JSONObject(responseBody?.string())
-                            val temperature: Double = json.getJSONObject("main").getDouble("temp")
-                            val isSunny = json.getJSONArray("weather").getJSONObject(0)
-                                .getString("main") == "Clear"
-                            isWalking = temperature > 20 && isSunny
-                        } catch (e: JSONException) {
-                            e.printStackTrace()
-                        }
-                    }
-                })
-            }
-        }, 0, WEATHER_UPDATE_INTERVAL.toLong())
-    }
+//    private fun startWeatherUpdates() {
+//
+//        val client = OkHttpClient()
+//        val request = Request.Builder()
+//            .url("http://api.openweathermap.org/data/2.5/weather?q=LosAngeles,us&appid=" + OPEN_WEATHER_MAP_API_KEY)
+//            .build()
+////        weatherTimer = Timer()
+//        weatherTimer.schedule(object : TimerTask() {
+//            override fun run() {
+//                client.newCall(request).enqueue(object : Callback {
+//                    override fun onFailure(call: okhttp3.Call, e: IOException) {
+//                        e.printStackTrace()
+//                    }
+//
+//                    override fun onResponse(call: okhttp3.Call, response: Response) {
+//                        try {
+//                            val responseBody = response.body
+//                            val json = JSONObject(responseBody?.string())
+//                            val temperature: Double = json.getJSONObject("main").getDouble("temp")
+//                            val isSunny = json.getJSONArray("weather").getJSONObject(0)
+//                                .getString("main") == "Clear"
+//                            isWalking = temperature > 20 && isSunny
+//                        } catch (e: JSONException) {
+//                            e.printStackTrace()
+//                        }
+//                    }
+//                })
+//            }
+//        }, 0, WEATHER_UPDATE_INTERVAL.toLong())
+//    }
 
     private fun checkUserCharacteristics(){
         //TODO implement checks which kind of user the user is
     }
 
-    private fun startReminderTimer() {
-//        reminderTimer = Timer()
-        reminderTimer.schedule(object : TimerTask() {
-            override fun run() {
-                if (isWalking) {
-                    val activityIntent = Intent(applicationContext, MainActivity::class.java)
-                    val notification: Notification = NotificationCompat.Builder(
-                        applicationContext, CHANNEL_ID
-                    )
-                        .setSmallIcon(R.drawable.ic_launcher_foreground)
-                        .setContentTitle("Take a walk!")
-                        .setContentText("Let's go for a walk!")
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                        .setAutoCancel(true)
-                        .build()
-                    val manager: NotificationManagerCompat = NotificationManagerCompat.from(
-                        applicationContext
-                    )
-                    if (ActivityCompat.checkSelfPermission(
-                            applicationContext,
-                            Manifest.permission.POST_NOTIFICATIONS
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        return
-                    }
-                    manager.notify(NOTIFICATION_ID, notification)
-                }
-            }
-        }, 0, REMINDER_INTERVAL.toLong())
-    }
+//    private fun startReminderTimer() {
+////        reminderTimer = Timer()
+//        reminderTimer.schedule(object : TimerTask() {
+//            override fun run() {
+//                if (isWalking) {
+//                    val activityIntent = Intent(applicationContext, MainActivity::class.java)
+//                    val notification: Notification = NotificationCompat.Builder(
+//                        applicationContext, CHANNEL_ID
+//                    )
+//                        .setSmallIcon(R.drawable.ic_launcher_foreground)
+//                        .setContentTitle("Take a walk!")
+//                        .setContentText("Let's go for a walk!")
+//                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//                        .setAutoCancel(true)
+//                        .build()
+//                    val manager: NotificationManagerCompat = NotificationManagerCompat.from(
+//                        applicationContext
+//                    )
+//                    if (ActivityCompat.checkSelfPermission(
+//                            applicationContext,
+//                            Manifest.permission.POST_NOTIFICATIONS
+//                        ) != PackageManager.PERMISSION_GRANTED
+//                    ) {
+//                        // TODO: Consider calling
+//                        //    ActivityCompat#requestPermissions
+//                        // here to request the missing permissions, and then overriding
+//                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                        //                                          int[] grantResults)
+//                        // to handle the case where the user grants the permission. See the documentation
+//                        // for ActivityCompat#requestPermissions for more details.
+//                        return
+//                    }
+//                    manager.notify(NOTIFICATION_ID, notification)
+//                }
+//            }
+//        }, 0, REMINDER_INTERVAL.toLong())
+//    }
 
     private fun notifyByTime(){
 
