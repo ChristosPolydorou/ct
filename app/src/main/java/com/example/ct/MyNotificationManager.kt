@@ -39,7 +39,7 @@ class MyNotificationManager(private val context: Context) {
     }
 
     @SuppressLint("MissingPermission")
-    fun sendTakeAWalkNotification() {
+    fun sendTakeAWalkNotification(message: String) {
         if (ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_NOTIFICATION_POLICY
@@ -50,9 +50,9 @@ class MyNotificationManager(private val context: Context) {
         }
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-            //.setSmallIcon(R.drawable.ic_walk_notification)
+            .setSmallIcon(R.drawable.ic_walk_notification_foreground)
             .setContentTitle("Take a Walk")
-            .setContentText("It's time to take a walk!")
+            .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
         with(NotificationManagerCompat.from(context)) {

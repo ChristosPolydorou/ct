@@ -17,26 +17,58 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import java.util.*
+import javax.sql.DataSource
 
 private const val PERMISSIONS_REQUEST_CODE = 123
 
 class MainActivity : AppCompatActivity() {
+    private val timer = Timer()
+    private val triggerTimer = Timer()
     @SuppressLint("UnspecifiedImmutableFlag")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
+            != PackageManager.PERMISSION_GRANTED
+        ) {
             // Permission is not granted
             // Request the permission
-            ActivityCompat.requestPermissions( this,
+            ActivityCompat.requestPermissions(
+                this,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 PERMISSIONS_REQUEST_CODE
             )
         }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission is not granted
+            // Request the permission
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.READ_CALENDAR),
+                PERMISSIONS_REQUEST_CODE
+            )
+        }
+        val context = applicationContext
+        val cache = Cache()
+        val notificationManager = MyNotificationManager(this.applicationContext)
+        val dataSourceManager = DatasourceManager(cache, context)
+        val user = User(type = "signal")
+        val userManager = UserManager(user)
+        val triggerManager = TriggerManager(userManager, notificationManager, cache)
+        timer.schedule(dataSourceManager, 0, 30 * 10)//00) //todo set this to once a day for the take a walk timer
+        triggerTimer.schedule(triggerManager, 0, 30 * 10)//00)
+    }
 
-        createNotificationChannel()
+
+        override fun onDestroy() {
+            super.onDestroy()
+            timer.cancel()
+        }
+
+        //createNotificationChannel()
 
         /*val serviceIntent = Intent(this, WalkReminderService::class.java)
         startService(serviceIntent)*/
@@ -70,7 +102,7 @@ class MainActivity : AppCompatActivity() {
 //        )
     }
 
-    private fun createNotificationChannel() {
+    /*private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Take a Walk Channel"
             val descriptionText = "Notifications for taking a walk"
@@ -83,6 +115,6 @@ class MainActivity : AppCompatActivity() {
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
-    }
-}
+    }*/
+
 

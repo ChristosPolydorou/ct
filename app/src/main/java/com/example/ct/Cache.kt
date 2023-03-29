@@ -10,6 +10,7 @@ class Cache {
         cacheMap["FivePm"] = false
         cacheMap["steps"] = 0
         cacheMap["target"] = 0
+        cacheMap["calendarEmpty"] = false
     }
 
     fun <T> get(key: String): T {
