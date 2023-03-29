@@ -15,6 +15,8 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+
 
 
     <application
@@ -31,20 +33,17 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".WalkReminderService"
             android:exported="false" />
         <receiver android:name=".WalkReminderReceiver"
             android:enabled="true"
             android:exported="false"/>
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </application>
+
         <receiver
             android:name=".BootReceiver"
             android:enabled="true"
@@ -56,6 +55,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".WalkReminderService"
-            tools:ignore="WrongManifestParent" />
+
+    </application>
+
 </manifest>
