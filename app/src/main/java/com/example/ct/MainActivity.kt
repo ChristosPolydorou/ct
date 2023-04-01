@@ -57,9 +57,9 @@ class MainActivity : AppCompatActivity() {
         val dataSourceManager = DatasourceManager(cache, context)
         val user = User(type = "signal")
         val userManager = UserManager(user)
-        val triggerManager = TriggerManager(userManager, notificationManager, cache)
-        timer.schedule(dataSourceManager, 0, 30 * 10)//00) //todo set this to once a day for the take a walk timer
-        triggerTimer.schedule(triggerManager, 0, 30 * 10)//00)
+        val triggerManager = TriggerManager(context,userManager, notificationManager, cache)
+        timer.schedule(dataSourceManager, 100000, 3000 * 1000)//00) //todo set this to once a day for the take a walk timer
+        triggerTimer.schedule(triggerManager, 100000, 3000 * 1000)//00)
     }
 
 

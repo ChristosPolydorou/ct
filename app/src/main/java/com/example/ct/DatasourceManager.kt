@@ -59,7 +59,7 @@ class DatasourceManager(private val cache: Cache, private val context: Context) 
     }
 
     // Get weather data. If the weather is good, modify the variable in the cache
-    fun loadWeatherData() {
+    /*fun loadWeatherData() {
         val client = OkHttpClient()
         val request = Request.Builder()
             .url("http://api.openweathermap.org/data/2.5/weather?q=LosAngeles,us&appid=" + OPEN_WEATHER_MAP_API_KEY)
@@ -99,6 +99,24 @@ class DatasourceManager(private val cache: Cache, private val context: Context) 
     companion object {
         private const val OPEN_WEATHER_MAP_API_KEY = "YOUR_API_KEY_HERE"
         private const val WEATHER_UPDATE_INTERVAL = 5 * 60 * 1000 // 5 minutes
+    }
+*/
+    //get weather data for Glasgow
+    private val weatherDataSource = WeatherDataSource()
+
+    init {
+        weatherDataSource.setWeatherDataListener(object : WeatherDataListener {
+            override fun onWeatherDataReceived(weatherData: String) {
+                // Process the received weather data
+            }
+        })
+
+        // Set the default city to Glasgow
+        getWeatherDataForCity("Glasgow")
+    }
+
+    private fun getWeatherDataForCity(city: String) {
+        weatherDataSource.getWeatherData(city)
     }
 
     override fun run() {
