@@ -59,17 +59,17 @@ class WeatherDataSource {
     }
 }
 
-class DataSourceManager {
-    private val weatherDataSource = WeatherDataSource()
-
-    init {
-        weatherDataSource.setWeatherDataListener(object : WeatherDataListener {
-            override fun onWeatherDataReceived(weatherData: String) {
-                // Process the received weather data
-            }
-        })
-    }
-    /*fun getWeatherDataForCity(city: String) {
-        weatherDataSource.getWeatherData(city)
-    }*/
-}
+//class DataSourceManager {
+//    private val weatherDataSource = WeatherDataSource()
+//
+//    init {
+//        weatherDataSource.setWeatherDataListener(object : WeatherDataListener {
+//            override fun onWeatherDataReceived(weatherData: String) {
+//                // Process the received weather data
+//            }
+//        })
+//    }
+//    /*fun getWeatherDataForCity(city: String) {
+//        weatherDataSource.getWeatherData(city)
+//    }*/
+//}

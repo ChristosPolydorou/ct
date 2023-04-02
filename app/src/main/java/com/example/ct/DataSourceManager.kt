@@ -1,28 +1,18 @@
 package com.example.ct
 
-import android.app.Application
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
-import android.provider.ContactsContract
 import android.text.format.DateUtils
-import android.util.Log
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import org.json.JSONException
-import org.json.JSONObject
-import java.io.IOException
+//import androidx.test.core.app.ApplicationProvider
+//import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import java.util.*
 
 
 //TODO this class actually does the checking of the context, e.g. the connection to the internet and check for the weather. if the weather is good, it modifies the variables in the cache
-class DatasourceManager(private val cache: Cache, private val context: Context) : TimerTask() {
+class DataSourceManager(private val cache: Cache, private val context: Context) : TimerTask() {
 
     fun loadCalendarData() {
         // Get the current time in UTC timezone

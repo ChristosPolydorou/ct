@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         val context = applicationContext
         val cache = Cache()
         val notificationManager = MyNotificationManager(this.applicationContext)
-        val dataSourceManager = DatasourceManager(cache, context)
+        val dataSourceManager = DataSourceManager(cache, context)
         val user = User(type = "signal")
         val userManager = UserManager(user)
         val triggerManager = TriggerManager(context,userManager, notificationManager, cache)
