@@ -22,47 +22,55 @@ import java.util.*
 
 
 class WalkReminderService : Service() {
-    private var reminderTimer: Timer = Timer()
-    private var weatherTimer: Timer = Timer()
+//    private var reminderTimer: Timer = Timer()
+    private val timer = Timer()
+    private val triggerTimer = Timer()
+//    private var weatherTimer: Timer = Timer()
 //    private var isWalking = false
 
     override fun onCreate() {
         super.onCreate()
-        createNotificationChannel()
+//        createNotificationChannel()
+        val context = applicationContext
+        val cache = Cache()
+        val notificationManager = MyNotificationManager(this.applicationContext)
+        val dataSourceManager = DataSourceManager(cache, context)
+        val user = User(type = "signal")
+        val userManager = UserManager(user)
+        val triggerManager = TriggerManager(context,userManager, notificationManager, cache)
+        // Update data every certain time
+        timer.schedule(dataSourceManager, 100000, 3000 * 1000)
+        // Check Cache every certain time
+        triggerTimer.schedule(triggerManager, 100000, 3000 * 1000)
     }
 
-    private fun createNotificationChannel() {
-        val channel = NotificationChannel(
-            CHANNEL_ID,
-            "Walk Reminder Channel",
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
-        channel.setDescription("Notifications for reminding the user to take a walk")
-        channel.enableLights(true)
-        channel.setLightColor(Color.GREEN)
-        channel.enableVibration(true)
-        val manager: NotificationManager = getSystemService(
-            NotificationManager::class.java
-        )
-        manager.createNotificationChannel(channel)
-    }
+//    private fun createNotificationChannel() {
+//        val channel = NotificationChannel(
+//            CHANNEL_ID,
+//            "Walk Reminder Channel",
+//            NotificationManager.IMPORTANCE_DEFAULT
+//        )
+//        channel.setDescription("Notifications for reminding the user to take a walk")
+//        channel.enableLights(true)
+//        channel.setLightColor(Color.GREEN)
+//        channel.enableVibration(true)
+//        val manager: NotificationManager = getSystemService(
+//            NotificationManager::class.java
+//        )
+//        manager.createNotificationChannel(channel)
+//    }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-
         // Check for location permission
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
-            // Notify by weather
-//            startWeatherUpdates()
-//            startReminderTimer()
-
-            // Notify by location
-
-            // Notify by time
-            notifyByTime()
-
-        }
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+//            == PackageManager.PERMISSION_GRANTED
+//        ) {
+//            // Notify by weather
+////            startWeatherUpdates()
+////            startReminderTimer()
+//            // Notify by location
+//        }
+        fivePmNotification()
         return START_STICKY
     }
 
@@ -144,7 +152,8 @@ class WalkReminderService : Service() {
 //        }, 0, REMINDER_INTERVAL.toLong())
 //    }
 
-    private fun notifyByTime(){
+    // 5pm notification
+    private fun fivePmNotification(){
 
         // Get the AlarmManager service
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -170,25 +179,29 @@ class WalkReminderService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        stopWeatherUpdates()
+//        stopWeatherUpdates()
         stopReminderTimer()
     }
 
-    private fun stopWeatherUpdates() {
-        weatherTimer.cancel()
-        weatherTimer.purge()
-    }
+//    private fun stopWeatherUpdates() {
+//        weatherTimer.cancel()
+//        weatherTimer.purge()
+//    }
 
     private fun stopReminderTimer() {
-        reminderTimer.cancel()
-        reminderTimer.purge()
+//        reminderTimer.cancel()
+//        reminderTimer.purge()
+        timer.cancel()
+        timer.purge()
+        triggerTimer.cancel()
+        triggerTimer.purge()
     }
 
     companion object {
         private const val CHANNEL_ID = "Walk Reminder Channel"
-        private const val NOTIFICATION_ID = 1
-        private const val OPEN_WEATHER_MAP_API_KEY = "YOUR_API_KEY_HERE"
-        private const val REMINDER_INTERVAL = 30 * 60 * 1000 // 30 minutes
-        private const val WEATHER_UPDATE_INTERVAL = 5 * 60 * 1000 // 5 minutes
+//        private const val NOTIFICATION_ID = 1
+//        private const val OPEN_WEATHER_MAP_API_KEY = "YOUR_API_KEY_HERE"
+//        private const val REMINDER_INTERVAL = 30 * 60 * 1000 // 30 minutes
+//        private const val WEATHER_UPDATE_INTERVAL = 5 * 60 * 1000 // 5 minutes
     }
 }
