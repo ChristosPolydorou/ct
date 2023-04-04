@@ -35,7 +35,6 @@ class TriggerManager(
     }
 
     fun checkTriggers() {
-        //weather trigger
         var triggered = false
         var message = ""
         if (cache.get("weatherGood")) {

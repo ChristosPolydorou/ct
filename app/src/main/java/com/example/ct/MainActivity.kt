@@ -22,8 +22,8 @@ import javax.sql.DataSource
 private const val PERMISSIONS_REQUEST_CODE = 123
 
 class MainActivity : AppCompatActivity() {
-    private val timer = Timer()
-    private val triggerTimer = Timer()
+//    private val timer = Timer()
+//    private val triggerTimer = Timer()
     @SuppressLint("UnspecifiedImmutableFlag")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,21 +51,21 @@ class MainActivity : AppCompatActivity() {
                 PERMISSIONS_REQUEST_CODE
             )
         }
-        val context = applicationContext
-        val cache = Cache()
-        val notificationManager = MyNotificationManager(this.applicationContext)
-        val dataSourceManager = DataSourceManager(cache, context)
-        val user = User(type = "signal")
-        val userManager = UserManager(user)
-        val triggerManager = TriggerManager(context,userManager, notificationManager, cache)
-        timer.schedule(dataSourceManager, 100000, 3000 * 1000)//00) //todo set this to once a day for the take a walk timer
-        triggerTimer.schedule(triggerManager, 100000, 3000 * 1000)//00)
+//        val context = applicationContext
+//        val cache = Cache()
+//        val notificationManager = MyNotificationManager(this.applicationContext)
+//        val dataSourceManager = DataSourceManager(cache, context)
+//        val user = User(type = "signal")
+//        val userManager = UserManager(user)
+//        val triggerManager = TriggerManager(context,userManager, notificationManager, cache)
+//        timer.schedule(dataSourceManager, 100000, 3000 * 1000)//00) //todo set this to once a day for the take a walk timer
+//        triggerTimer.schedule(triggerManager, 100000, 3000 * 1000)//00)
     }
 
 
         override fun onDestroy() {
             super.onDestroy()
-            timer.cancel()
+//            timer.cancel()
         }
 
         //createNotificationChannel()

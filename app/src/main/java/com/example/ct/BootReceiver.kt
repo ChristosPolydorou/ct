@@ -8,13 +8,10 @@ import android.util.Log
 
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-
-        if (Intent.ACTION_BOOT_COMPLETED == intent.action) {
-            Log.d("BootReceiver", "Received BOOT_COMPLETED broadcast.")
-            val serviceIntent = Intent(context, WalkReminderService::class.java)
-            context.startForegroundService(serviceIntent)
-            Log.d("BootReceiver", "Started WalkReminderService.")
-
-        }
+//        if (Intent.ACTION_BOOT_COMPLETED == intent.action) {
+        val serviceIntent = Intent(context, WalkReminderService::class.java)
+        context.startForegroundService(serviceIntent)
+        Log.d("==============","----------------------")
+//        }
     }
 }
