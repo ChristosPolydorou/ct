@@ -1,32 +1,75 @@
 package com.example.ct
 
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
+
+import android.content.SharedPreferences
+
+
 //TODO this class stores boolean variables for different situations, e.g. weatherGood, FivePm etc., the values for these are changed in the datasource manager
-class Cache {
-    private val cacheMap = mutableMapOf<String, Any>()
+class Cache (context: Context, triggerManager: TriggerManager){
+    var situationsCache: SharedPreferences = context.getSharedPreferences(
+        R.string.situations_cache.toString(), MODE_PRIVATE)
+    val editor: SharedPreferences.Editor = situationsCache.edit()
+//    private val cacheMap = mutableMapOf<String, Any>()
 
     init {
-        // Use uniform keys
-        cacheMap["weatherGood"] = false
-        cacheMap["FivePm"] = false
-        cacheMap["steps"] = 0
-        cacheMap["target"] = 0
-        cacheMap["calendarEmpty"] = false
+        // Uniform key names are set in the strings.xml
+//        cacheMap["weatherGood"] = false
+//        cacheMap["FivePm"] = false
+//        cacheMap["steps"] = 0
+//        cacheMap["target"] = 0
+//        cacheMap["calendarEmpty"] = false
+
+        // Uniform key names are set in the strings.xml
+        // If it's the first time open the sharedPreferences file
+        if (!situationsCache.contains("is_first_time")){
+            put("is_first_time", true)
+            put(R.string.weather_is_good.toString(), false)
+            put(R.string.five_pm.toString(), false)
+            put(R.string.calendar_is_empty.toString(), false)
+            put(R.string.steps.toString(), 0)
+            put(R.string.target.toString(), 0)
+            // Register a listener to watch every variables.
+            situationsCache.registerOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener {
+                    cachePref, key ->
+                triggerManager.checkTriggers(key, get(key))
+            })
+        }
     }
 
-    fun <T> get(key: String): T {
-        @Suppress("UNCHECKED_CAST")
-        return cacheMap[key] as T
+    fun get(key: String): Any {
+//        return cacheMap[key] as T
+        return if(key==R.string.steps.toString() || key==R.string.target.toString()){
+            situationsCache.getInt(key, -1)
+        }else{
+            situationsCache.getBoolean(key, false)
+        }
+
     }
 
-    fun <T : Any> put(key: String, value: T) {
-        cacheMap[key] = value
+    private fun  put(key: String, value: Any) {
+//        cacheMap[key] = value
+        when(value){
+            is Int -> {
+                editor.putInt(key, value)
+                editor.apply()
+            }
+            is Boolean -> {
+                editor.putBoolean(key, value)
+                editor.apply()
+            }
+        }
+
     }
 
-    fun <T : Any> set(key: String, value: T) {
-        cacheMap[key] = value
+    fun  set(key: String, value: Any) {
+//        cacheMap[key] = value
+        put(key, value)
+        editor.apply()
     }
 
     fun clear() {
-        cacheMap.clear()
+        editor.clear()
     }
 }

@@ -2,6 +2,7 @@ package com.example.ct
 
 import android.content.ContentUris
 import android.content.Context
+import android.content.SharedPreferences
 import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
@@ -12,10 +13,10 @@ import java.util.*
 
 
 //TODO this class formats how to manage data source. It is derived by WeatherDataSource and CalendarDataSource
-abstract class DataSourceManager(private val cache: Cache, private val context: Context) : TimerTask() {
+abstract class DataSourceManager(private val cache: Cache, private val context: Context) {
+    abstract fun loadData()
+    abstract fun setCache()
 
-    abstract fun loadData(): Boolean
-    abstract fun setCache(isWalk: Boolean)
 //    fun loadCalendarData() {
 //        // Get the current time in UTC timezone
 //        val now = System.currentTimeMillis()
@@ -111,10 +112,5 @@ abstract class DataSourceManager(private val cache: Cache, private val context: 
 //        weatherDataSource.getWeatherData(city)
 //    }
 
-    override fun run() {
-//        loadCalendarData()
-        //loadWeatherData() needs some extra permissions i think, cleartext communication to api.openweathermap... not permitted by network security policy
-        setCache(loadData())
 
-    }
 }

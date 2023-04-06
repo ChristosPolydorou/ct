@@ -11,12 +11,30 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 
 
-class WalkReminderReceiver : BroadcastReceiver() {
-    private var facilitator = false //high motivation, low ability
-    private var signal = true //high ability, high motivation
+class WalkReminderReceiver(context: Context, intent: Intent) : BroadcastReceiver() {
+    //    private var facilitator = false //high motivation, low ability
+//    private var signal = true //high ability, high motivation
     //private var spark = false //high ability, low motivation
+    private var user = User("signal")
+    private val userManager = UserManager(user)
+    private val notificationManager = MyNotificationManager(context)
+    private val triggerManager = TriggerManager(userManager, notificationManager)
+    private val cache = Cache(context, triggerManager)
+
+    private val weatherData: DataSourceManager = WeatherDataSource(cache, context)
+    private val calendarData: DataSourceManager = CalendarDataSource(cache, context)
+
 
     override fun onReceive(context: Context, intent: Intent) {
+
+        if (intent.action == "Action_For_Load_Data") {
+            weatherData.loadData()
+            calendarData.loadData()
+        } else if (intent.action == "Action_For_Five_Pm") {
+            cache.set("FivePm", true)
+        }
+
+
         // Build and display the notification
 //        var notText = ""
 //        if (intent.action == "weather") {

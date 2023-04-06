@@ -6,7 +6,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-
+// The listener is set in Cache class
 //interface WeatherDataListener {
 //    fun onWeatherDataReceived(weatherData: String)
 //}
@@ -15,12 +15,16 @@ import java.net.URL
 class WeatherDataSource(private val cache: Cache, private val context: Context) :
     DataSourceManager(cache, context) {
     //    private var listener: WeatherDataListener? = null
-//
 //    fun setWeatherDataListener(listener: WeatherDataListener) {
 //        this.listener = listener
 //    }
+    private var weatherResult = mutableMapOf<String, Boolean>()
+    init {
+        // Get the old weather data for initialization
+        weatherResult[R.string.weather_is_good.toString()] = cache.get(R.string.weather_is_good.toString()).toString().toBoolean()
+    }
     // Loading weather data
-    override fun loadData() : Boolean{
+    override fun loadData(){
         val apiUrl =
             "http://api.weatherapi.com/v1/current.json?key=affd127b42314bc3b60220131233003&q=Glasgow"
         val url = URL(apiUrl)
@@ -36,12 +40,13 @@ class WeatherDataSource(private val cache: Cache, private val context: Context) 
 
         connection.disconnect()
         stringBuilder.toString()
-        TODO("Check the weather data then return if the weather is good or not")
-        return true
+        TODO("Check the new weather data if the weather is good or not then update cache.")
+        weatherResult[R.string.weather_is_good.toString()] = true
+        setCache()
     }
 
-    override fun setCache(weatherGood:Boolean ) {
-        cache.set("weatherGood", weatherGood)
+    override fun setCache() {
+            cache.set(R.string.weather_is_good.toString(), weatherResult[R.string.weather_is_good.toString()]!!)
     }
 
 //    fun getWeatherData(city: String) {

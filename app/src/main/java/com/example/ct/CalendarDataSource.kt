@@ -9,15 +9,15 @@ import java.util.*
 //TODO this class should actually do the checking of the calendar
 
 
-interface CalendarDataListener {
-    fun onCalendarDataReceived(events: List<CalendarEvent>)
-}
-class CalendarDataSource(private val context: Context) {
-    private var listener: CalendarDataListener? = null
+//interface CalendarDataListener {
+//    fun onCalendarDataReceived(events: List<CalendarEvent>)
+//}
+class CalendarDataSource(private val cache: Cache, private val context: Context) : DataSourceManager(cache, context){
+//    private var listener: CalendarDataListener? = null
 
-    fun setCalendarDataListener(listener: CalendarDataListener) {
-        this.listener = listener
-    }
+//    fun setCalendarDataListener(listener: CalendarDataListener) {
+//        this.listener = listener
+//    }
 
     @SuppressLint("Range")
     fun getCalendarEvents() {
@@ -59,7 +59,7 @@ class CalendarDataSource(private val context: Context) {
             }
         }
 
-        listener?.onCalendarDataReceived(events)
+//        listener?.onCalendarDataReceived(events)
     }
 
     @SuppressLint("Range")
@@ -93,6 +93,14 @@ class CalendarDataSource(private val context: Context) {
                 null
             }
         }
+    }
+
+    override fun loadData() {
+        setCache()
+    }
+
+    override fun setCache() {
+        cache.set(R.string.calendar_is_empty.toString(), getCalendarEvents())
     }
 }
 
