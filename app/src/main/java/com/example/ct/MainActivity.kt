@@ -24,6 +24,8 @@ private const val PERMISSIONS_REQUEST_CODE = 123
 class MainActivity : AppCompatActivity() {
 //    private val timer = Timer()
 //    private val triggerTimer = Timer()
+    private lateinit var musicBrowser: MusicBrowser
+
     @SuppressLint("UnspecifiedImmutableFlag")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +68,7 @@ class MainActivity : AppCompatActivity() {
         override fun onDestroy() {
             super.onDestroy()
 //            timer.cancel()
+            musicBrowser.disconnect()
         }
 
         //createNotificationChannel()

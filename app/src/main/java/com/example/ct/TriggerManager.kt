@@ -56,4 +56,13 @@ class TriggerManager(
         }
     }
 
+    fun checkMusicTrigger() {
+        // Implement your logic to handle the rock music trigger
+        val shouldNotify = userManager.shouldSendRockMusicNotification()
+
+        if (shouldNotify) {
+            notificationManager.sendRockMusicNotification()
+        }
+    }
+
 }

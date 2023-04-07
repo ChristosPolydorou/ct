@@ -59,4 +59,8 @@ class MyNotificationManager(private val context: Context) {
             notify(NOTIFICATION_ID, builder.build())
         }
     }
+
+    fun sendRockMusicNotification() {
+
+    }
 }

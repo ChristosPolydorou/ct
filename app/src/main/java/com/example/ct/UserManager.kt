@@ -1,14 +1,23 @@
 package com.example.ct
 
 import kotlin.math.abs
+import android.content.Context
+import android.content.SharedPreferences
 
 //TODO this class is responsible for checking if the user is signal, facilitator, or spark. we can do this (lazily) by asking them, or checking some context variables (e.g. walking speed). it then modifies the corresponding variables in the trigger manager. i would just start off with setting signal to true, the other two to false.
-class UserManager (user: User) {
+class UserManager (user: User, private val context: Context) {
+    private val sharedPreferences: SharedPreferences =
+        context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
     //TODO modify this class to check if what type of user the user is
     // Initialize user types
     var signal: Boolean = true
     var facilitator: Boolean = false
     var spark: Boolean = false
+
+    companion object {
+        private const val PREFERENCES_NAME = "user_preferences"
+        private const val ROCK_MUSIC_NOTIFICATIONS_ENABLED = "rock_music_notifications_enabled"
+    }
 
     fun checkUserType(walkingSpeed: Double) {
         if (abs(walkingSpeed) < 0.5) {
@@ -24,5 +33,13 @@ class UserManager (user: User) {
             facilitator = false
             spark = true
         }
+    }
+
+    fun shouldSendRockMusicNotification(): Boolean {
+        return sharedPreferences.getBoolean(ROCK_MUSIC_NOTIFICATIONS_ENABLED, true)
+    }
+
+    fun setRockMusicNotificationsEnabled(enabled: Boolean) {
+        sharedPreferences.edit().putBoolean(ROCK_MUSIC_NOTIFICATIONS_ENABLED, enabled).apply()
     }
 }
