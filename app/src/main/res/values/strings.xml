@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">ct</string>
+    <string name="situations_cache">SituationsCache</string>
+    <string name="weather_is_good">WeatherIsGood</string>
+    <string name="five_pm">FivePm</string>
+    <string name="steps">Steps</string>
+    <string name="target">Target</string>
+    <string name="calendar_is_empty">CalendarIsEmpty</string>
 </resources>
