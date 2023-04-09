@@ -21,28 +21,34 @@ import java.io.IOException
 import java.util.*
 
 
-class WalkReminderService : Service() {
+class WalkReminderService() : Service() {
+    private lateinit var alarmManager: AlarmManager
 //    private var reminderTimer: Timer = Timer()
     private val timer = Timer()
     private val triggerTimer = Timer()
-    // Get the AlarmManager service
-    val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
 //    private var weatherTimer: Timer = Timer()
 //    private var isWalking = false
 
     override fun onCreate() {
         super.onCreate()
+
 //        val context = applicationContext
-//        val cache = Cache(context)
 //        val notificationManager = MyNotificationManager(this.applicationContext)
-//        val dataSourceManager : DataSourceManager = WeatherDataSource(cache, context)
 //        val user = User(type = "signal")
-//        val userManager = UserManager(user)
-//        val triggerManager = TriggerManager(context,userManager, notificationManager, cache)
+//        val userManager = UserManager(user, context)
+//        val triggerManager = TriggerManager(userManager, notificationManager)
+//        val cache = Cache(context, triggerManager)
+//         val weatherData: DataSourceManager = WeatherDataSource(cache, context)
+//         val calendarData: DataSourceManager = CalendarDataSource(cache, context)
+
 //        // Update data every certain time
 //        timer.schedule(dataSourceManager, 100000, 3000 * 1000)
 //        // Check Cache every certain time
 //        triggerTimer.schedule(triggerManager, 100000, 3000 * 1000)
+
+        // Get the AlarmManager service
+         alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         // Create an Intent for the alarm that updates data(weather, location etc.) every certain time.
         val intent1 = Intent(this, WalkReminderReceiver::class.java)
@@ -50,7 +56,7 @@ class WalkReminderService : Service() {
         val pendingIntent1 = PendingIntent.getBroadcast(this, 0, intent1, 0)
 
         // Setting the alarm to update data every certain time.
-        var interval : Long = 3000*100000
+        var interval : Long = 30*1000
         var firstAlarmTime : Long = System.currentTimeMillis()+interval
         alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstAlarmTime, interval, pendingIntent1)
 
