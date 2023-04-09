@@ -49,6 +49,10 @@ class TriggerManager(
                 triggered = value.toString().toBoolean()
                 message = "You don't have anything planned today! Why not go for a walk then?"
             }
+            else -> {
+                message = ("This is a test trigger.")
+                triggered = true
+            }
         }
 
         if (triggered){
