@@ -53,6 +53,11 @@ class MainActivity : AppCompatActivity() {
                 PERMISSIONS_REQUEST_CODE
             )
         }
+
+//        val serviceIntent = Intent(applicationContext, WalkReminderService::class.java)
+//        applicationContext.startForegroundService(serviceIntent)
+
+
 //        val context = applicationContext
 //        val cache = Cache()
 //        val notificationManager = MyNotificationManager(this.applicationContext)
@@ -68,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         override fun onDestroy() {
             super.onDestroy()
 //            timer.cancel()
-            musicBrowser.disconnect()
+//            musicBrowser.disconnect()
         }
 
         //createNotificationChannel()

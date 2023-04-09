@@ -7,11 +7,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 
 
-class WalkReminderReceiver() : BroadcastReceiver() {
+class WalkReminderReceiver : BroadcastReceiver() {
     //    private var facilitator = false //high motivation, low ability
 //    private var signal = true //high ability, high motivation
     //private var spark = false //high ability, low motivation
@@ -40,6 +41,9 @@ class WalkReminderReceiver() : BroadcastReceiver() {
             calendarData.loadData()
         } else if (intent.action == "Action_For_Five_Pm") {
             cache.set("FivePm", true)
+        }
+        else {
+            Log.d("Forground Service Started", "======================")
         }
 
 
