@@ -4,24 +4,27 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import java.util.*
+import kotlin.math.log
 
 
-class WalkReminderService() : Service() {
+class WalkReminderService : Service() {
     private lateinit var alarmManager: AlarmManager
-
     //    private var reminderTimer: Timer = Timer()
     private val timer = Timer()
     private val triggerTimer = Timer()
+//    private lateinit var notificationManager : MyNotificationManager
 
 //    private var weatherTimer: Timer = Timer()
 //    private var isWalking = false
 
-    override fun onCreate() {
-        super.onCreate()
+//    override fun onCreate() {
+//        super.onCreate()
 //        val context = applicationContext
-//        val notificationManager = MyNotificationManager(this.applicationContext)
+//         notificationManager = MyNotificationManager(this.applicationContext)
+
 //        val user = User(type = "signal")
 //        val userManager = UserManager(user, context)
 //        val triggerManager = TriggerManager(userManager, notificationManager)
@@ -33,7 +36,7 @@ class WalkReminderService() : Service() {
 //        timer.schedule(dataSourceManager, 100000, 3000 * 1000)
 //        // Check Cache every certain time
 //        triggerTimer.schedule(triggerManager, 100000, 3000 * 1000)
-    }
+//    }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         // Check for location permission
@@ -47,18 +50,11 @@ class WalkReminderService() : Service() {
 //        }
 //        fivePmNotification()
 
-        // Create a notification for the foreground service
-        val intent0 = Intent(this, WalkReminderReceiver::class.java)
-        intent0.action = "Action_For_Start_Service"
-        val pendingIntentForService = PendingIntent.getBroadcast(this, 0, intent0, 0)
+        // TODO() Create a notification for the foreground service
+//        val notificationManager = MyNotificationManager(this)
+//        val notificationForService = notificationManager.sendServiceNotification()
+//        startForeground(1, notificationForService)
 
-        val notificationForService: Notification = NotificationCompat.Builder(this, "service_channel")
-            .setContentTitle("Foreground Service")
-            .setContentText("Service is running in the foreground")
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentIntent(pendingIntentForService)
-            .build()
-        startForeground(300, notificationForService)
 
         // Get the AlarmManager service
         alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -68,7 +64,7 @@ class WalkReminderService() : Service() {
         intent1.action = "Action_For_Load_Data"
         val pendingIntent1 = PendingIntent.getBroadcast(this, 0, intent1, 0)
 
-        // Setting the alarm to update data every certain time.
+        // TODO Setting the alarm to update data every certain time.
         var interval: Long = 30 * 1000
         var firstAlarmTime: Long = System.currentTimeMillis() + interval
         alarmManager.setRepeating(
@@ -83,7 +79,7 @@ class WalkReminderService() : Service() {
         intent2.action = "Action_For_Five_Pm"
         val pendingIntent2 = PendingIntent.getBroadcast(this, 0, intent2, 0)
 
-        // Setting the alarm to trigger at 5pm every day.
+        // TODO Setting the alarm to trigger at 5pm every day.
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         calendar[Calendar.HOUR_OF_DAY] = 17
@@ -95,7 +91,7 @@ class WalkReminderService() : Service() {
             AlarmManager.INTERVAL_DAY,
             pendingIntent2
         )
-        // In class WalkReminderReceiver it shows what will do every time when alarms are fired.
+        // TODO In class WalkReminderReceiver it shows what will do every time when alarms are fired.
 
         return START_STICKY
     }

@@ -16,34 +16,39 @@ class WalkReminderReceiver : BroadcastReceiver() {
     //    private var facilitator = false //high motivation, low ability
 //    private var signal = true //high ability, high motivation
     //private var spark = false //high ability, low motivation
-    private lateinit var user :User
-    private lateinit var userManager : UserManager
-    private lateinit var notificationManager : MyNotificationManager
-    private lateinit var triggerManager : TriggerManager
-    private lateinit var cache : Cache
+    private lateinit var user: User
+    private lateinit var userManager: UserManager
+    private lateinit var notificationManager: MyNotificationManager
+    private lateinit var triggerManager: TriggerManager
+    private lateinit var cache: Cache
 
     private lateinit var weatherData: DataSourceManager
     private lateinit var calendarData: DataSourceManager
+    var testNum = 0 // for testing
 
 
     override fun onReceive(context: Context, intent: Intent) {
 
+        Log.d("---------------------------", "--------------------------------")
+
         user = User("signal")
         userManager = UserManager(user, context)
         notificationManager = MyNotificationManager(context)
-        triggerManager =  TriggerManager(userManager, notificationManager)
+        triggerManager = TriggerManager(userManager, notificationManager)
         cache = Cache(context, triggerManager)
-        weatherData  = WeatherDataSource(cache, context)
-        calendarData  = CalendarDataSource(cache, context)
+        weatherData = WeatherDataSource(cache, context)
+        calendarData = CalendarDataSource(cache, context)
 
         if (intent.action == "Action_For_Load_Data") {
+//--------------for testing--------------------------------//
+            cache.set("steps", testNum)
+            testNum++
+            Log.d("steps:==========", testNum.toString())
+//---------------------for testing-----------------------//
             weatherData.loadData()
             calendarData.loadData()
         } else if (intent.action == "Action_For_Five_Pm") {
             cache.set("FivePm", true)
-        }
-        else {
-            Log.d("Forground Service Started", "======================")
         }
 
 

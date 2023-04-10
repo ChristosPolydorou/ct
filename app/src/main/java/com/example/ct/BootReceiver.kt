@@ -7,13 +7,14 @@ import android.os.Bundle
 import android.util.Log
 
 
-// I'm not sure if this is working cuz the Log.d message didn't show
+// TODO  It'll take a while to get to this function. If the foreground service starts in the MainActivity, it'll faster.
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
 //        if (Intent.ACTION_BOOT_COMPLETED == intent.action) {
 
         val serviceIntent = Intent(context, WalkReminderService::class.java)
-        context.startForegroundService(serviceIntent)
+//        context.startForegroundService(serviceIntent)
+        context.startService(serviceIntent)         // I think startService is more suitable here.
         Log.d("==============","================================")
 //        }
     }

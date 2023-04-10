@@ -10,7 +10,7 @@ import android.content.SharedPreferences
 class Cache (context: Context, triggerManager: TriggerManager){
     var situationsCache: SharedPreferences = context.getSharedPreferences(
         R.string.situations_cache.toString(), MODE_PRIVATE)
-    val editor: SharedPreferences.Editor = situationsCache.edit()
+    private val editor: SharedPreferences.Editor = situationsCache.edit()
 //    private val cacheMap = mutableMapOf<String, Any>()
 
     init {
@@ -30,6 +30,7 @@ class Cache (context: Context, triggerManager: TriggerManager){
             put(R.string.calendar_is_empty.toString(), false)
             put(R.string.steps.toString(), 0)
             put(R.string.target.toString(), 0)
+
             // Register a listener to watch every variables.
             situationsCache.registerOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener {
                     cachePref, key ->
