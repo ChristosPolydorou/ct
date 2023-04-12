@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
-class GeolocationDataSource(private val cache: Cache, private val activity: Activity,
+class GeolocationDataSource(private val cache: Cache,
                             private val context: Context) :
     DataSourceManager(cache, context) {
 
@@ -24,19 +24,6 @@ class GeolocationDataSource(private val cache: Cache, private val activity: Acti
 
     @SuppressLint("MissingPermission")
     override fun loadData() {
-        // Check location permissions
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            // Request the permission
-            ActivityCompat.requestPermissions(
-                activity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-            // Permission not granted, can't continue
-            return
-        }
 
         // Get the user's current location
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
