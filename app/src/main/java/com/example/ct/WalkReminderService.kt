@@ -50,7 +50,7 @@ class WalkReminderService : Service() {
 //        }
 //        fivePmNotification()
 
-        // TODO() Create a notification for the foreground service
+        //  Create a notification for the foreground service
 //        val notificationManager = MyNotificationManager(this)
 //        val notificationForService = notificationManager.sendServiceNotification()
 //        startForeground(1, notificationForService)
