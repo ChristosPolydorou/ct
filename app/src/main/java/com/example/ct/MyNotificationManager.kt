@@ -3,6 +3,7 @@ package com.example.ct
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -61,6 +62,16 @@ class MyNotificationManager(private val context: Context) {
     }
 
     fun sendRockMusicNotification() {
+
+    }
+
+    fun sendServiceNotification(): Notification {
+
+        return NotificationCompat.Builder(context, CHANNEL_ID)
+            .setContentTitle("Foreground Service")
+            .setContentText("Service is running in the foreground")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .build()
 
     }
 }
