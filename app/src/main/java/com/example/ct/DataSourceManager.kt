@@ -15,7 +15,7 @@ import java.util.*
 //TODO this class formats how to manage data source. It is derived by WeatherDataSource and CalendarDataSource
 abstract class DataSourceManager(private val cache: Cache, private val context: Context) {
     abstract fun loadData()
-    abstract fun setCache()
+    abstract fun setCache(cacheData:Any)
 
 //    fun loadCalendarData() {
 //        // Get the current time in UTC timezone

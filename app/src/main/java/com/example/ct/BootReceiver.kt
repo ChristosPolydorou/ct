@@ -12,9 +12,9 @@ class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
 //        if (Intent.ACTION_BOOT_COMPLETED == intent.action) {
 
-        val serviceIntent = Intent(context, WalkReminderService::class.java)
+//        val serviceIntent = Intent(context, WalkReminderService::class.java)
 //        context.startForegroundService(serviceIntent)
-        context.startService(serviceIntent)         // I think startService is more suitable here.
+//        context.startService(serviceIntent)         // I think startService is more suitable here.
         Log.d("==============","================================")
 //        }
     }

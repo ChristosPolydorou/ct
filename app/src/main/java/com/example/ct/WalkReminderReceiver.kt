@@ -24,8 +24,6 @@ class WalkReminderReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
 
-        Log.d("---------------------------", "--------------------------------")
-
         user = User("signal")
         userManager = UserManager(user, context)
         notificationManager = MyNotificationManager(context)
@@ -39,7 +37,7 @@ class WalkReminderReceiver : BroadcastReceiver() {
 //--------------for testing--------------------------------//
             cache.set("steps", testNum)
             testNum++
-            Log.d("steps:==========", testNum.toString())
+            Log.d("steps:=============", testNum.toString())
 //---------------------for testing-----------------------//
             weatherData.loadData()
             calendarData.loadData()

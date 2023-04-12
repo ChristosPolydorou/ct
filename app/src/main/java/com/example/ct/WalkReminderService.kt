@@ -65,7 +65,7 @@ class WalkReminderService : Service() {
         val pendingIntent1 = PendingIntent.getBroadcast(this, 0, intent1, 0)
 
         // TODO Setting the alarm to update data every certain time.
-        var interval: Long = 30 * 1000
+        var interval: Long = 60 * 1000
         var firstAlarmTime: Long = System.currentTimeMillis() + interval
         alarmManager.setRepeating(
             AlarmManager.ELAPSED_REALTIME_WAKEUP,

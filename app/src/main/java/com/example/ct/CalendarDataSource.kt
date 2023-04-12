@@ -20,7 +20,7 @@ class CalendarDataSource(private val cache: Cache, private val context: Context)
 //    }
 
     @SuppressLint("Range")
-    fun getCalendarEvents() {
+    fun getCalendarEvents() : MutableList<CalendarEvent>{
         val currentTime = System.currentTimeMillis()
         val endTime = currentTime + 86400000 // 24 hours from now
 
@@ -60,47 +60,50 @@ class CalendarDataSource(private val cache: Cache, private val context: Context)
         }
 
 //        listener?.onCalendarDataReceived(events)
+        return events
     }
 
     @SuppressLint("Range")
-    fun getCalendarEvent(eventId: Long): CalendarEvent? {
-        val uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventId)
-        val projection = arrayOf(
-            CalendarContract.Events._ID,
-            CalendarContract.Events.TITLE,
-            CalendarContract.Events.DESCRIPTION,
-            CalendarContract.Events.DTSTART,
-            CalendarContract.Events.DTEND
-        )
-
-        val cursor = context.contentResolver.query(uri, projection, null, null, null)
-
-        return cursor?.use {
-            if (it.moveToFirst()) {
-                val title = it.getString(it.getColumnIndex(CalendarContract.Events.TITLE))
-                val description = it.getString(it.getColumnIndex(CalendarContract.Events.DESCRIPTION))
-                val start = it.getLong(it.getColumnIndex(CalendarContract.Events.DTSTART))
-                val end = it.getLong(it.getColumnIndex(CalendarContract.Events.DTEND))
-
-                CalendarEvent(
-                    eventId,
-                    title,
-                    description,
-                    Date(start),
-                    Date(end)
-                )
-            } else {
-                null
-            }
-        }
-    }
+//    fun getCalendarEvent(eventId: Long): CalendarEvent? {
+//        val uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventId)
+//        val projection = arrayOf(
+//            CalendarContract.Events._ID,
+//            CalendarContract.Events.TITLE,
+//            CalendarContract.Events.DESCRIPTION,
+//            CalendarContract.Events.DTSTART,
+//            CalendarContract.Events.DTEND
+//        )
+//
+//        val cursor = context.contentResolver.query(uri, projection, null, null, null)
+//
+//        return cursor?.use {
+//            if (it.moveToFirst()) {
+//                val title = it.getString(it.getColumnIndex(CalendarContract.Events.TITLE))
+//                val description = it.getString(it.getColumnIndex(CalendarContract.Events.DESCRIPTION))
+//                val start = it.getLong(it.getColumnIndex(CalendarContract.Events.DTSTART))
+//                val end = it.getLong(it.getColumnIndex(CalendarContract.Events.DTEND))
+//
+//                CalendarEvent(
+//                    eventId,
+//                    title,
+//                    description,
+//                    Date(start),
+//                    Date(end)
+//                )
+//            } else {
+//                null
+//            }
+//        }
+//    }
 
     override fun loadData() {
-        setCache()
+        val events = getCalendarEvents()
+        val calendarIsEmpty = events.isEmpty()
+        setCache(calendarIsEmpty)
     }
 
-    override fun setCache() {
-        cache.set(R.string.calendar_is_empty.toString(), getCalendarEvents())
+    override fun setCache(calendarIsEmpty : Any) {
+        cache.set(R.string.calendar_is_empty.toString(), calendarIsEmpty)
     }
 }
 
