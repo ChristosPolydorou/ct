@@ -26,6 +26,7 @@ class Cache (context: Context, triggerManager: TriggerManager){
         if (!situationsCache.contains("is_first_time")){
             put("is_first_time", true)
             put(R.string.weather_is_good.toString(), false)
+            put("location_near".toString(), false)
             put(R.string.five_pm.toString(), false)
             put(R.string.calendar_is_empty.toString(), false)
             put(R.string.steps.toString(), 0)

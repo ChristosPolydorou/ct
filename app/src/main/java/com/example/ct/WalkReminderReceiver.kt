@@ -1,5 +1,6 @@
 package com.example.ct
 
+import GeolocationDataSource
 import android.Manifest
 import android.R
 import android.app.NotificationManager
@@ -38,6 +39,7 @@ class WalkReminderReceiver : BroadcastReceiver() {
         cache = Cache(context, triggerManager)
         weatherData = WeatherDataSource(cache, context)
         calendarData = CalendarDataSource(cache, context)
+        locationData = GeolocationDataSource(cache, context)
 
         if (intent.action == "Action_For_Load_Data") {
 //--------------for testing--------------------------------//
