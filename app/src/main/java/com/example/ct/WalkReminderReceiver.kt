@@ -1,16 +1,9 @@
 package com.example.ct
 
-import GeolocationDataSource
-import android.Manifest
-import android.R
-import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.util.Log
-import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
 
 
 class WalkReminderReceiver : BroadcastReceiver() {
@@ -25,6 +18,7 @@ class WalkReminderReceiver : BroadcastReceiver() {
 
     private lateinit var weatherData: DataSourceManager
     private lateinit var calendarData: DataSourceManager
+    private lateinit var locationData: DataSourceManager
     var testNum = 0 // for testing
 
 

@@ -1,7 +1,7 @@
 package com.example.ct
 
 import android.content.Context
-import android.os.AsyncTask
+import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -29,6 +29,8 @@ class WeatherDataSource(private val cache: Cache, private val context: Context) 
             "http://api.weatherapi.com/v1/current.json?key=affd127b42314bc3b60220131233003&q=Glasgow"
         val url = URL(apiUrl)
         val connection = url.openConnection() as HttpURLConnection
+        connection.requestMethod = "GET"
+
         val inputStream = InputStreamReader(connection.inputStream)
         val bufferedReader = BufferedReader(inputStream)
         val stringBuilder = StringBuilder()
@@ -37,12 +39,28 @@ class WeatherDataSource(private val cache: Cache, private val context: Context) 
         while (bufferedReader.readLine().also { line = it } != null) {
             stringBuilder.append(line)
         }
+        bufferedReader.close()
+        inputStream.close()
 
         connection.disconnect()
-        stringBuilder.toString()
-        TODO("Check the new weather data if the weather is good or not then update cache.")
-        weatherResult[R.string.weather_is_good.toString()] = true
-        setCache()
+
+        // TODO("Check the new weather data if the weather is good or not then update cache.")
+        // Parse the JSON data
+        val json = JSONObject(stringBuilder.toString())
+        if(json != null){
+
+            val current = json.getJSONObject("current")
+
+            // Check if the temperature, precipitation, and wind speed are good for a walk
+            val temperature = current.getDouble("temp_c")
+            val isRaining = current.getDouble("precip_mm") > 0
+            val windSpeed = current.getDouble("wind_kph")
+
+            weatherResult[R.string.weather_is_good.toString()] = temperature > 15 && temperature < 25 && !isRaining && windSpeed < 10
+            setCache()
+
+        }
+
     }
 
     override fun setCache() {
