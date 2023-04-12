@@ -54,9 +54,9 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        val serviceIntent = Intent(applicationContext, WalkReminderService::class.java)
+//        val serviceIntent = Intent(applicationContext, WalkReminderService::class.java)
 //        applicationContext.startForegroundService(serviceIntent)
-        applicationContext.startService(serviceIntent)
+//        applicationContext.startService(serviceIntent)
 
 
 //        val context = applicationContext

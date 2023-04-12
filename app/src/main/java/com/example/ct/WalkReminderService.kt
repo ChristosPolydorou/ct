@@ -12,9 +12,11 @@ import kotlin.math.log
 
 class WalkReminderService : Service() {
     private lateinit var alarmManager: AlarmManager
+    private lateinit var pendingIntent1 : PendingIntent
+    private lateinit var pendingIntent2 : PendingIntent
     //    private var reminderTimer: Timer = Timer()
-    private val timer = Timer()
-    private val triggerTimer = Timer()
+//    private val timer = Timer()
+//    private val triggerTimer = Timer()
 //    private lateinit var notificationManager : MyNotificationManager
 
 //    private var weatherTimer: Timer = Timer()
@@ -51,9 +53,9 @@ class WalkReminderService : Service() {
 //        fivePmNotification()
 
         //  Create a notification for the foreground service
-//        val notificationManager = MyNotificationManager(this)
-//        val notificationForService = notificationManager.sendServiceNotification()
-//        startForeground(1, notificationForService)
+        val notificationManager = MyNotificationManager(this)
+        val notificationForService = notificationManager.sendServiceNotification()
+        startForeground(1, notificationForService)
 
 
         // Get the AlarmManager service
@@ -62,7 +64,7 @@ class WalkReminderService : Service() {
         // Create an Intent for the alarm that updates data(weather, location etc.) every certain time.
         val intent1 = Intent(this, WalkReminderReceiver::class.java)
         intent1.action = "Action_For_Load_Data"
-        val pendingIntent1 = PendingIntent.getBroadcast(this, 0, intent1, 0)
+         pendingIntent1 = PendingIntent.getBroadcast(this, 0, intent1, 0)
 
         // TODO Setting the alarm to update data every certain time.
         var interval: Long = 60 * 1000
@@ -77,7 +79,7 @@ class WalkReminderService : Service() {
         // Create an Intent for the alarm that triggers 5pm notification.
         val intent2 = Intent(this, WalkReminderReceiver::class.java)
         intent2.action = "Action_For_Five_Pm"
-        val pendingIntent2 = PendingIntent.getBroadcast(this, 0, intent2, 0)
+         pendingIntent2 = PendingIntent.getBroadcast(this, 0, intent2, 0)
 
         // TODO Setting the alarm to trigger at 5pm every day.
         val calendar = Calendar.getInstance()
@@ -132,9 +134,9 @@ class WalkReminderService : Service() {
 //        }, 0, WEATHER_UPDATE_INTERVAL.toLong())
 //    }
 
-    private fun checkUserCharacteristics() {
-        //TODO implement checks which kind of user the user is
-    }
+//    private fun checkUserCharacteristics() {
+//        //TODO implement checks which kind of user the user is
+//    }
 
 //    private fun startReminderTimer() {
 ////        reminderTimer = Timer()
@@ -189,10 +191,12 @@ class WalkReminderService : Service() {
     private fun stopReminderTimer() {
 //        reminderTimer.cancel()
 //        reminderTimer.purge()
-        timer.cancel()
-        timer.purge()
-        triggerTimer.cancel()
-        triggerTimer.purge()
+        alarmManager.cancel(pendingIntent1)
+        alarmManager.cancel(pendingIntent2)
+//        timer.cancel()
+//        timer.purge()
+//        triggerTimer.cancel()
+//        triggerTimer.purge()
     }
 
     companion object {

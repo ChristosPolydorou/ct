@@ -1,6 +1,7 @@
 package com.example.ct
 
 import android.content.Context
+import android.util.Log
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -20,6 +21,7 @@ class WeatherDataSource(private val cache: Cache, private val context: Context) 
 //    }
     // Loading weather data
     override fun loadData(){
+        Log.d("WeatherDataSource:=============", "WeatherDataSource")
         val apiUrl =
             "http://api.weatherapi.com/v1/current.json?key=affd127b42314bc3b60220131233003&q=Glasgow"
         val url = URL(apiUrl)

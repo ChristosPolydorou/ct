@@ -65,13 +65,13 @@ class MyNotificationManager(private val context: Context) {
 
     }
 
-//    fun sendServiceNotification(): Notification {
-//
-//        return NotificationCompat.Builder(context, CHANNEL_ID)
-//            .setContentTitle("Foreground Service")
-//            .setContentText("Service is running in the foreground")
-//            .setSmallIcon(R.drawable.ic_launcher_foreground)
-//            .build()
-//
-//    }
+    fun sendServiceNotification(): Notification {
+
+        return NotificationCompat.Builder(context, CHANNEL_ID)
+            .setContentTitle("Foreground Service")
+            .setContentText("Service is running in the foreground")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .build()
+
+    }
 }

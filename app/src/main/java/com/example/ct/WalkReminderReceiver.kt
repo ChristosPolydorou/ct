@@ -31,7 +31,7 @@ class WalkReminderReceiver : BroadcastReceiver() {
         cache = Cache(context, triggerManager)
         weatherData = WeatherDataSource(cache, context)
         calendarData = CalendarDataSource(cache, context)
-        locationData = GeolocationDataSource(cache, context)
+        locationData = GeolocationDataSource(cache,  context)
 
         if (intent.action == "Action_For_Load_Data") {
 //--------------for testing--------------------------------//
