@@ -49,6 +49,14 @@ class TriggerManager(
                 triggered = value.toString().toBoolean()
                 message = "You don't have anything planned today! Why not go for a walk then?"
             }
+            R.string.location_near.toString() -> {
+                triggered = value.toString().toBoolean()
+                message = "There is a park nearby! Why not take a walk to explore it?"
+            }
+            else -> {
+                message = ("This is a test trigger.")
+                triggered = true
+            }
         }
 
         if (triggered){

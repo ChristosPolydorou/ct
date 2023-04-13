@@ -1,73 +1,44 @@
 package com.example.ct
 
-import android.Manifest
 import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.IBinder
-import androidx.core.app.ActivityCompat
+import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import org.json.JSONException
-import org.json.JSONObject
-import java.io.IOException
 import java.util.*
+import kotlin.math.log
 
 
 class WalkReminderService : Service() {
-//    private var reminderTimer: Timer = Timer()
-    private val timer = Timer()
-    private val triggerTimer = Timer()
-    // Get the AlarmManager service
-    val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    private lateinit var alarmManager: AlarmManager
+    private lateinit var pendingIntent1 : PendingIntent
+    private lateinit var pendingIntent2 : PendingIntent
+    //    private var reminderTimer: Timer = Timer()
+//    private val timer = Timer()
+//    private val triggerTimer = Timer()
+//    private lateinit var notificationManager : MyNotificationManager
+
 //    private var weatherTimer: Timer = Timer()
 //    private var isWalking = false
 
-    override fun onCreate() {
-        super.onCreate()
+//    override fun onCreate() {
+//        super.onCreate()
 //        val context = applicationContext
-//        val cache = Cache(context)
-//        val notificationManager = MyNotificationManager(this.applicationContext)
-//        val dataSourceManager : DataSourceManager = WeatherDataSource(cache, context)
+//         notificationManager = MyNotificationManager(this.applicationContext)
+
 //        val user = User(type = "signal")
-//        val userManager = UserManager(user)
-//        val triggerManager = TriggerManager(context,userManager, notificationManager, cache)
+//        val userManager = UserManager(user, context)
+//        val triggerManager = TriggerManager(userManager, notificationManager)
+//        val cache = Cache(context, triggerManager)
+//         val weatherData: DataSourceManager = WeatherDataSource(cache, context)
+//         val calendarData: DataSourceManager = CalendarDataSource(cache, context)
+
 //        // Update data every certain time
 //        timer.schedule(dataSourceManager, 100000, 3000 * 1000)
 //        // Check Cache every certain time
 //        triggerTimer.schedule(triggerManager, 100000, 3000 * 1000)
-
-        // Create an Intent for the alarm that updates data(weather, location etc.) every certain time.
-        val intent1 = Intent(this, WalkReminderReceiver::class.java)
-        intent1.action = "Action_For_Load_Data"
-        val pendingIntent1 = PendingIntent.getBroadcast(this, 0, intent1, 0)
-
-        // Setting the alarm to update data every certain time.
-        var interval : Long = 3000*100000
-        var firstAlarmTime : Long = System.currentTimeMillis()+interval
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstAlarmTime, interval, pendingIntent1)
-
-        // Create an Intent for the alarm that triggers 5pm notification.
-        val intent2 = Intent(this, WalkReminderReceiver::class.java)
-        intent2.action = "Action_For_Five_Pm"
-        val pendingIntent2 = PendingIntent.getBroadcast(this, 0, intent2, 0)
-
-        // Setting the alarm to trigger at 5pm every day.
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        calendar[Calendar.HOUR_OF_DAY] = 17
-        calendar[Calendar.MINUTE] = 0
-        calendar[Calendar.SECOND] = 0
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent2)
-        // In class WalkReminderReceiver it shows what will do every time when alarms are fired.
-    }
+//    }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         // Check for location permission
@@ -80,6 +51,50 @@ class WalkReminderService : Service() {
 //            // Notify by location
 //        }
 //        fivePmNotification()
+
+        //  Create a notification for the foreground service
+        val notificationManager = MyNotificationManager(this)
+        val notificationForService = notificationManager.sendServiceNotification()
+        startForeground(1, notificationForService)
+
+
+        // Get the AlarmManager service
+        alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        // Create an Intent for the alarm that updates data(weather, location etc.) every certain time.
+        val intent1 = Intent(this, WalkReminderReceiver::class.java)
+        intent1.action = "Action_For_Load_Data"
+         pendingIntent1 = PendingIntent.getBroadcast(this, 0, intent1, 0)
+
+        // TODO Setting the alarm to update data every certain time.
+        var interval: Long = 60 * 1000
+        var firstAlarmTime: Long = System.currentTimeMillis() + interval
+        alarmManager.setRepeating(
+            AlarmManager.ELAPSED_REALTIME_WAKEUP,
+            firstAlarmTime,
+            interval,
+            pendingIntent1
+        )
+
+        // Create an Intent for the alarm that triggers 5pm notification.
+        val intent2 = Intent(this, WalkReminderReceiver::class.java)
+        intent2.action = "Action_For_Five_Pm"
+         pendingIntent2 = PendingIntent.getBroadcast(this, 0, intent2, 0)
+
+        // TODO Setting the alarm to trigger at 5pm every day.
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = System.currentTimeMillis()
+        calendar[Calendar.HOUR_OF_DAY] = 17
+        calendar[Calendar.MINUTE] = 0
+        calendar[Calendar.SECOND] = 0
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            pendingIntent2
+        )
+        // TODO In class WalkReminderReceiver it shows what will do every time when alarms are fired.
+
         return START_STICKY
     }
 
@@ -119,9 +134,9 @@ class WalkReminderService : Service() {
 //        }, 0, WEATHER_UPDATE_INTERVAL.toLong())
 //    }
 
-    private fun checkUserCharacteristics(){
-        //TODO implement checks which kind of user the user is
-    }
+//    private fun checkUserCharacteristics() {
+//        //TODO implement checks which kind of user the user is
+//    }
 
 //    private fun startReminderTimer() {
 ////        reminderTimer = Timer()
@@ -162,7 +177,6 @@ class WalkReminderService : Service() {
 //    }
 
 
-
     override fun onDestroy() {
         super.onDestroy()
 //        stopWeatherUpdates()
@@ -177,10 +191,12 @@ class WalkReminderService : Service() {
     private fun stopReminderTimer() {
 //        reminderTimer.cancel()
 //        reminderTimer.purge()
-        timer.cancel()
-        timer.purge()
-        triggerTimer.cancel()
-        triggerTimer.purge()
+        alarmManager.cancel(pendingIntent1)
+        alarmManager.cancel(pendingIntent2)
+//        timer.cancel()
+//        timer.purge()
+//        triggerTimer.cancel()
+//        triggerTimer.purge()
     }
 
     companion object {

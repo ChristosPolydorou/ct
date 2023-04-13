@@ -64,6 +64,9 @@
             </intent-filter>
         </service>
 
+        <meta-data
+            android:name="com.mapbox.token"
+            android:value="pk.eyJ1IjoibmluYWJybyIsImEiOiJjbGdjcGJ0amwwMjJsM3JtZm1nYWR1MHhuIn0.gLOewLY5fY0t6XUqRIrzbg" />
 
 
     </application>

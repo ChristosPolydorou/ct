@@ -1,7 +1,8 @@
 package com.example.ct
 
 import android.content.Context
-import android.os.AsyncTask
+import android.util.Log
+import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -18,17 +19,15 @@ class WeatherDataSource(private val cache: Cache, private val context: Context) 
 //    fun setWeatherDataListener(listener: WeatherDataListener) {
 //        this.listener = listener
 //    }
-    private var weatherResult = mutableMapOf<String, Boolean>()
-    init {
-        // Get the old weather data for initialization
-        weatherResult[R.string.weather_is_good.toString()] = cache.get(R.string.weather_is_good.toString()).toString().toBoolean()
-    }
     // Loading weather data
     override fun loadData(){
+        Log.d("WeatherDataSource:=============", "WeatherDataSource")
         val apiUrl =
             "http://api.weatherapi.com/v1/current.json?key=affd127b42314bc3b60220131233003&q=Glasgow"
         val url = URL(apiUrl)
         val connection = url.openConnection() as HttpURLConnection
+        connection.requestMethod = "GET"
+
         val inputStream = InputStreamReader(connection.inputStream)
         val bufferedReader = BufferedReader(inputStream)
         val stringBuilder = StringBuilder()
@@ -37,16 +36,30 @@ class WeatherDataSource(private val cache: Cache, private val context: Context) 
         while (bufferedReader.readLine().also { line = it } != null) {
             stringBuilder.append(line)
         }
+        bufferedReader.close()
+        inputStream.close()
 
         connection.disconnect()
-        stringBuilder.toString()
-        TODO("Check the new weather data if the weather is good or not then update cache.")
-        weatherResult[R.string.weather_is_good.toString()] = true
-        setCache()
+
+        // TODO("Check the new weather data if the weather is good or not then update cache.")
+        // Parse the JSON data
+        val json = JSONObject(stringBuilder.toString())
+        if(json!=null){
+            val current = json.getJSONObject("current")
+
+            // Check if the temperature, precipitation, and wind speed are good for a walk
+            val temperature = current.getDouble("temp_c")
+            val isRaining = current.getDouble("precip_mm") > 0
+            val windSpeed = current.getDouble("wind_kph")
+
+            var weatherIsGood = temperature > 15 && temperature < 25 && !isRaining && windSpeed < 10
+            setCache(weatherIsGood)
+        }
+
     }
 
-    override fun setCache() {
-            cache.set(R.string.weather_is_good.toString(), weatherResult[R.string.weather_is_good.toString()]!!)
+    override fun setCache(weatherIsGood : Any) {
+            cache.set(R.string.weather_is_good.toString(), weatherIsGood)
     }
 
 //    fun getWeatherData(city: String) {

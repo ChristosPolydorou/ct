@@ -1,33 +1,44 @@
 package com.example.ct
 
-import android.Manifest
-import android.R
-import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
+import android.util.Log
 
 
-class WalkReminderReceiver(context: Context, intent: Intent) : BroadcastReceiver() {
+class WalkReminderReceiver : BroadcastReceiver() {
     //    private var facilitator = false //high motivation, low ability
 //    private var signal = true //high ability, high motivation
     //private var spark = false //high ability, low motivation
-    private var user = User("signal")
-    private val userManager = UserManager(user)
-    private val notificationManager = MyNotificationManager(context)
-    private val triggerManager = TriggerManager(userManager, notificationManager)
-    private val cache = Cache(context, triggerManager)
+    private lateinit var user: User
+    private lateinit var userManager: UserManager
+    private lateinit var notificationManager: MyNotificationManager
+    private lateinit var triggerManager: TriggerManager
+    private lateinit var cache: Cache
 
-    private val weatherData: DataSourceManager = WeatherDataSource(cache, context)
-    private val calendarData: DataSourceManager = CalendarDataSource(cache, context)
+    private lateinit var weatherData: DataSourceManager
+    private lateinit var calendarData: DataSourceManager
+    private lateinit var locationData: DataSourceManager
+    var testNum = 0 // for testing
 
 
     override fun onReceive(context: Context, intent: Intent) {
 
+        user = User("signal")
+        userManager = UserManager(user, context)
+        notificationManager = MyNotificationManager(context)
+        triggerManager = TriggerManager(userManager, notificationManager)
+        cache = Cache(context, triggerManager)
+        weatherData = WeatherDataSource(cache, context)
+        calendarData = CalendarDataSource(cache, context)
+        locationData = GeolocationDataSource(cache,  context)
+
         if (intent.action == "Action_For_Load_Data") {
+//--------------for testing--------------------------------//
+            cache.set("steps", testNum)
+            testNum++
+            Log.d("steps:=============", testNum.toString())
+//---------------------for testing-----------------------//
             weatherData.loadData()
             calendarData.loadData()
         } else if (intent.action == "Action_For_Five_Pm") {
