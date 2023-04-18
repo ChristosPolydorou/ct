@@ -119,7 +119,7 @@ class GeolocationDataSource(private val cache: Cache,
         }*/
 
         val isNearHome = location.distanceTo(homeLocation) < 500 // Distance in meters
-        val isNearJoggingTrack = checkIfParkIsNear()//location.distanceTo(joggingTrackLocation) < 1000 // Distance in meters
+        val isNearJoggingTrack = checkIfParkIsNear(location)//location.distanceTo(joggingTrackLocation) < 1000 // Distance in meters
         var isNearBusStop = checkIfBusStopNear(location)
         /*for (item in busStopLocations){
             if(location.distanceTo(item) < 50){
