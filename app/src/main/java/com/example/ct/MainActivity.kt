@@ -99,14 +99,14 @@ private fun hasPermissions(mainActivity: MainActivity, permissions: Array<String
             != PackageManager.PERMISSION_GRANTED
         ) {
             // Permission is not granted
-                permissions.drop(1)
+                permissions.toMutableList().removeAt(1)
         }
         if (ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.READ_CALENDAR)
             != PackageManager.PERMISSION_GRANTED
         ) {
             // Permission is not granted
             // Request the permission
-            permissions.drop(0)
+            permissions.toMutableList().removeAt(0)
         }
 
     return permissions
