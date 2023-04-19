@@ -4,10 +4,11 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 
 import android.content.SharedPreferences
+import java.io.Serializable
 
 
 //TODO this class stores boolean variables for different situations, e.g. weatherGood, FivePm etc., the values for these are changed in the datasource manager
-class Cache (context: Context, triggerManager: TriggerManager){
+class Cache (@Transient private val context: Context, @Transient private val triggerManager: TriggerManager) : Serializable {
     var situationsCache: SharedPreferences = context.getSharedPreferences(
         R.string.situations_cache.toString(), MODE_PRIVATE)
     private val editor: SharedPreferences.Editor = situationsCache.edit()

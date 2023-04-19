@@ -5,6 +5,7 @@ import android.util.Log
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.io.Serializable
 import java.net.HttpURLConnection
 import java.net.URL
 // The listener is set in Cache class
@@ -13,15 +14,14 @@ import java.net.URL
 //}
 
 //TODO this class should be responsible for checking the weather, and then passing the info to the datasourcemanager
-class WeatherDataSource(private val cache: Cache, private val context: Context) :
-    DataSourceManager(cache, context) {
+class WeatherDataSource(private val cache: Cache, @Transient private val context: Context) :
+    DataSourceManager(cache, context), Serializable {
     //    private var listener: WeatherDataListener? = null
 //    fun setWeatherDataListener(listener: WeatherDataListener) {
 //        this.listener = listener
 //    }
     // Loading weather data
     override fun loadData(){
-        Log.d("WeatherDataSource:=============", "WeatherDataSource")
         val apiUrl =
             "http://api.weatherapi.com/v1/current.json?key=affd127b42314bc3b60220131233003&q=Glasgow"
         val url = URL(apiUrl)

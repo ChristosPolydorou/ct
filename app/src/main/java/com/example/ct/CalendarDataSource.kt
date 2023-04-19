@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.provider.CalendarContract
+import java.io.Serializable
 import java.util.*
 
 //TODO this class should actually do the checking of the calendar
@@ -12,7 +13,8 @@ import java.util.*
 //interface CalendarDataListener {
 //    fun onCalendarDataReceived(events: List<CalendarEvent>)
 //}
-class CalendarDataSource(private val cache: Cache, private val context: Context) : DataSourceManager(cache, context){
+class CalendarDataSource(private val cache: Cache, @Transient private val context: Context) : DataSourceManager(cache, context),
+    Serializable{
 //    private var listener: CalendarDataListener? = null
 
 //    fun setCalendarDataListener(listener: CalendarDataListener) {
@@ -63,7 +65,7 @@ class CalendarDataSource(private val cache: Cache, private val context: Context)
         return events
     }
 
-    @SuppressLint("Range")
+//    @SuppressLint("Range")
 //    fun getCalendarEvent(eventId: Long): CalendarEvent? {
 //        val uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventId)
 //        val projection = arrayOf(
@@ -108,9 +110,9 @@ class CalendarDataSource(private val cache: Cache, private val context: Context)
 }
 
 data class CalendarEvent(
-    val eventId: Long,
-    val title: String?,
-    val description: String?,
-    val startDate: Date?,
-    val endDate: Date?
-)
+    var eventId: Long,
+    var title: String?,
+    var description: String?,
+    @Transient var startDate: Date?,
+   @Transient var endDate: Date?
+): Serializable

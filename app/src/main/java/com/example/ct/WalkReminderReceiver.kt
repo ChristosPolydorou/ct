@@ -3,46 +3,32 @@ package com.example.ct
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 
 
 class WalkReminderReceiver : BroadcastReceiver() {
     //    private var facilitator = false //high motivation, low ability
 //    private var signal = true //high ability, high motivation
     //private var spark = false //high ability, low motivation
-    private lateinit var user: User
-    private lateinit var userManager: UserManager
-    private lateinit var notificationManager: MyNotificationManager
-    private lateinit var triggerManager: TriggerManager
-    private lateinit var cache: Cache
 
-    private lateinit var weatherData: DataSourceManager
-    private lateinit var calendarData: DataSourceManager
-    private lateinit var locationData: DataSourceManager
     var testNum = 0 // for testing
 
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onReceive(context: Context, intent: Intent) {
-
-        user = User("signal")
-        userManager = UserManager(user, context)
-        notificationManager = MyNotificationManager(context)
-        triggerManager = TriggerManager(userManager, notificationManager)
-        cache = Cache(context, triggerManager)
-        weatherData = WeatherDataSource(cache, context)
-        calendarData = CalendarDataSource(cache, context)
-        locationData = GeolocationDataSource(cache,  context)
+        val cache = intent.getSerializableExtra("cache", Cache::class.java)
+        val weatherData = intent.getSerializableExtra("weather", WeatherDataSource::class.java)
+//        val calendarData = intent.getSerializableExtra("calendar", CalendarDataSource::class.java)
+//        val locationData = intent.getSerializableExtra("location", GeolocationDataSource::class.java)
 
         if (intent.action == "Action_For_Load_Data") {
-//--------------for testing--------------------------------//
-            cache.set("steps", testNum)
-            testNum++
-            Log.d("steps:=============", testNum.toString())
-//---------------------for testing-----------------------//
-            weatherData.loadData()
-            calendarData.loadData()
+            weatherData!!.loadData()
+//            calendarData!!.loadData()
+//            locationData!!.loadData()
         } else if (intent.action == "Action_For_Five_Pm") {
-            cache.set("FivePm", true)
+            cache!!.set("FivePm", true)
         }
 
 

@@ -2,10 +2,7 @@ package com.example.ct
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.AlarmManager
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.Context
 import android.os.Build
 import android.content.Intent
@@ -31,27 +28,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            // Permission is not granted
-            // Request the permission
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                PERMISSIONS_REQUEST_CODE
-            )
-        }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            // Permission is not granted
-            // Request the permission
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.READ_CALENDAR),
-                PERMISSIONS_REQUEST_CODE
-            )
+        val permissions = arrayOf(
+            Manifest.permission.READ_CALENDAR,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+        val checkPermission = hasPermissions(this, permissions)
+        if (checkPermission.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, permissions, PERMISSIONS_REQUEST_CODE)
         }
 
 //        val serviceIntent = Intent(applicationContext, WalkReminderService::class.java)
@@ -71,7 +54,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-        override fun onDestroy() {
+    override fun onDestroy() {
             super.onDestroy()
 //            timer.cancel()
 //            musicBrowser.disconnect()
@@ -111,19 +94,20 @@ class MainActivity : AppCompatActivity() {
 //        )
     }
 
-    /*private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Take a Walk Channel"
-            val descriptionText = "Notifications for taking a walk"
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(MyNotificationManager.CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-            }
-
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+private fun hasPermissions(mainActivity: MainActivity, permissions: Array<String>): Array<String> {
+            if (ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission is not granted
+                permissions.drop(1)
         }
-    }*/
+        if (ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.READ_CALENDAR)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission is not granted
+            // Request the permission
+            permissions.drop(0)
+        }
 
-
+    return permissions
+}

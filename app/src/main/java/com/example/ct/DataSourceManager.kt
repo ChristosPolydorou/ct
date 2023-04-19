@@ -7,13 +7,15 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
 import android.text.format.DateUtils
+import java.io.Serializable
 //import androidx.test.core.app.ApplicationProvider
 //import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import java.util.*
 
 
 //TODO this class formats how to manage data source. It is derived by WeatherDataSource and CalendarDataSource
-abstract class DataSourceManager(private val cache: Cache, private val context: Context) {
+abstract class DataSourceManager(private val cache: Cache,  @Transient private val context: Context) :
+    Serializable {
     abstract fun loadData()
     abstract fun setCache(cacheData:Any)
 

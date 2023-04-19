@@ -15,12 +15,11 @@ import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
 import org.jsoup.Jsoup
+import java.io.Serializable
 
 
-
-class GeolocationDataSource(private val cache: Cache,
-                            private val context: Context) :
-    DataSourceManager(cache, context) {
+class GeolocationDataSource(private val cache: Cache, @Transient private val context: Context) :
+    DataSourceManager(cache, context), Serializable {
 
     private val LOCATION_HOME = "location_home"
     private val LOCATION_NEAR_JOGGING_TRACK = "location_near_jogging_track"

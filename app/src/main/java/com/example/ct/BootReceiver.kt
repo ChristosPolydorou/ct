@@ -14,7 +14,6 @@ class BootReceiver : BroadcastReceiver() {
 
         val serviceIntent = Intent(context, WalkReminderService::class.java)
         context.startForegroundService(serviceIntent)
-        Log.d("==============","================================")
 //        }
     }
 }
