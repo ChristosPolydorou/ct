@@ -19,8 +19,6 @@ import javax.sql.DataSource
 private const val PERMISSIONS_REQUEST_CODE = 123
 
 class MainActivity : AppCompatActivity() {
-//    private val timer = Timer()
-//    private val triggerTimer = Timer()
     private lateinit var musicBrowser: MusicBrowser
 
     @SuppressLint("UnspecifiedImmutableFlag")
@@ -37,61 +35,13 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, permissions, PERMISSIONS_REQUEST_CODE)
         }
 
-//        val serviceIntent = Intent(applicationContext, WalkReminderService::class.java)
-//        applicationContext.startForegroundService(serviceIntent)
-//        applicationContext.startService(serviceIntent)
-
-
-//        val context = applicationContext
-//        val cache = Cache()
-//        val notificationManager = MyNotificationManager(this.applicationContext)
-//        val dataSourceManager = DataSourceManager(cache, context)
-//        val user = User(type = "signal")
-//        val userManager = UserManager(user)
-//        val triggerManager = TriggerManager(context,userManager, notificationManager, cache)
-//        timer.schedule(dataSourceManager, 100000, 3000 * 1000)//00) //todo set this to once a day for the take a walk timer
-//        triggerTimer.schedule(triggerManager, 100000, 3000 * 1000)//00)
     }
 
 
     override fun onDestroy() {
             super.onDestroy()
-//            timer.cancel()
 //            musicBrowser.disconnect()
         }
-
-        //createNotificationChannel()
-
-        /*val serviceIntent = Intent(this, WalkReminderService::class.java)
-        startService(serviceIntent)*/
-
-//        // Get a Calendar instance for the current time
-//        val calendar: Calendar = Calendar.getInstance()
-//
-//        // Set the time to trigger the notification (in this example, 8:00 AM)
-//        calendar.set(Calendar.HOUR_OF_DAY, 8)
-//        calendar.set(Calendar.MINUTE, 0)
-//        calendar.set(Calendar.SECOND, 0)
-//
-//        // Create a PendingIntent for the WalkReminderService
-//        val intent = Intent(this, WalkReminderService::class.java)
-//        val pendingIntent =
-//            PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-//
-//        // Get an instance of AlarmManager
-//
-//        // Get an instance of AlarmManager
-//        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-//
-//        // Set the alarm to trigger at the specified time
-//
-//        // Set the alarm to trigger at the specified time
-//        alarmManager.setRepeating(
-//            AlarmManager.RTC_WAKEUP,
-//            calendar.getTimeInMillis(),
-//            AlarmManager.INTERVAL_DAY,
-//            pendingIntent
-//        )
     }
 
 private fun hasPermissions(mainActivity: MainActivity, permissions: Array<String>): Array<String> {

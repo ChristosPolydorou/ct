@@ -65,38 +65,6 @@ class CalendarDataSource(private val cache: Cache, @Transient private val contex
         return events
     }
 
-//    @SuppressLint("Range")
-//    fun getCalendarEvent(eventId: Long): CalendarEvent? {
-//        val uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventId)
-//        val projection = arrayOf(
-//            CalendarContract.Events._ID,
-//            CalendarContract.Events.TITLE,
-//            CalendarContract.Events.DESCRIPTION,
-//            CalendarContract.Events.DTSTART,
-//            CalendarContract.Events.DTEND
-//        )
-//
-//        val cursor = context.contentResolver.query(uri, projection, null, null, null)
-//
-//        return cursor?.use {
-//            if (it.moveToFirst()) {
-//                val title = it.getString(it.getColumnIndex(CalendarContract.Events.TITLE))
-//                val description = it.getString(it.getColumnIndex(CalendarContract.Events.DESCRIPTION))
-//                val start = it.getLong(it.getColumnIndex(CalendarContract.Events.DTSTART))
-//                val end = it.getLong(it.getColumnIndex(CalendarContract.Events.DTEND))
-//
-//                CalendarEvent(
-//                    eventId,
-//                    title,
-//                    description,
-//                    Date(start),
-//                    Date(end)
-//                )
-//            } else {
-//                null
-//            }
-//        }
-//    }
 
     override fun loadData() {
         val events = getCalendarEvents()
