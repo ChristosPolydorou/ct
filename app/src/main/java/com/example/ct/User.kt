@@ -1,5 +1,5 @@
 package com.example.ct
 
 data class User(
-    val type:String
+    val type: UserType
 )

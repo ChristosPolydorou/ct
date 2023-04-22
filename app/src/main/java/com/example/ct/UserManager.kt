@@ -10,9 +10,10 @@ class UserManager (user: User, private val context: Context) {
         context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
     //TODO modify this class to check if what type of user the user is
     // Initialize user types
-    var signal: Boolean = true
+    var userType: UserType = UserType.UNKNOWN
+    /*var signal: Boolean = true
     var facilitator: Boolean = false
-    var spark: Boolean = false
+    var spark: Boolean = false*/
 
     companion object {
         private const val PREFERENCES_NAME = "user_preferences"
@@ -20,6 +21,13 @@ class UserManager (user: User, private val context: Context) {
     }
 
     fun checkUserType(walkingSpeed: Double) {
+        userType = when {
+            abs(walkingSpeed) < 0.5 -> UserType.SIGNAL
+            abs(walkingSpeed) < 1.5 -> UserType.FACILITATOR
+            else -> UserType.SPARK
+        }
+    }
+    /*fun checkUserType(walkingSpeed: Double) {
         if (abs(walkingSpeed) < 0.5) {
             signal = true
             facilitator = false
@@ -33,7 +41,7 @@ class UserManager (user: User, private val context: Context) {
             facilitator = false
             spark = true
         }
-    }
+    }*/
 
     fun shouldSendRockMusicNotification(): Boolean {
         return sharedPreferences.getBoolean(ROCK_MUSIC_NOTIFICATIONS_ENABLED, true)
