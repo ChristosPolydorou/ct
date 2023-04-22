@@ -28,10 +28,10 @@ class WalkReminderService : Service() {
     private lateinit var locationData: DataSourceManager
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        user = User("signal")
+        user = User(UserType.UNKNOWN)
         userManager = UserManager(user, this)
         notificationManager = MyNotificationManager(this)
-        triggerManager = TriggerManager(userManager, notificationManager)
+        triggerManager = TriggerManager(this, userManager, notificationManager)
         cache = Cache(this, triggerManager)
         weatherData = WeatherDataSource(cache, this)
         calendarData = CalendarDataSource(cache, this)
