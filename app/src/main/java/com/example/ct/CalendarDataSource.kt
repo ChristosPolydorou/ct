@@ -9,20 +9,10 @@ import java.util.*
 
 //TODO this class should actually do the checking of the calendar
 
-
-//interface CalendarDataListener {
-//    fun onCalendarDataReceived(events: List<CalendarEvent>)
-//}
-class CalendarDataSource(private val cache: Cache, @Transient private val context: Context) : DataSourceManager(cache, context),
+class CalendarDataSource : DataSourceManager(),
     Serializable{
-//    private var listener: CalendarDataListener? = null
-
-//    fun setCalendarDataListener(listener: CalendarDataListener) {
-//        this.listener = listener
-//    }
-
     @SuppressLint("Range")
-    fun getCalendarEvents() : MutableList<CalendarEvent>{
+    fun getCalendarEvents(context: Context) : MutableList<CalendarEvent>{
         val currentTime = System.currentTimeMillis()
         val endTime = currentTime + 86400000 // 24 hours from now
 
@@ -61,19 +51,18 @@ class CalendarDataSource(private val cache: Cache, @Transient private val contex
             }
         }
 
-//        listener?.onCalendarDataReceived(events)
         return events
     }
 
 
-    override fun loadData() {
-        val events = getCalendarEvents()
+    override fun loadData(context: Context) {
+        val events = getCalendarEvents(context)
         val calendarIsEmpty = events.isEmpty()
         setCache(calendarIsEmpty)
     }
 
     override fun setCache(calendarIsEmpty : Any) {
-        cache.set(R.string.calendar_is_empty.toString(), calendarIsEmpty)
+        Cache.set(R.string.calendar_is_empty.toString(), calendarIsEmpty)
     }
 }
 

@@ -6,6 +6,7 @@
     <string name="steps">Steps</string>
     <string name="target">Target</string>
     <string name="calendar_is_empty">CalendarIsEmpty</string>
-    <string name="location_near" />
+    <string name="location_near">LocationNear</string>
     <string name="mapbox_access_token">sk.eyJ1IjoibmluYWJybyIsImEiOiJjbGdjcnQwZ2QwZXVuM3RzeGtsd3IwbmFrIn0.cb21VHlW5FK1rifVJOiHiw</string>
+    <string name="user">User</string>
 </resources>

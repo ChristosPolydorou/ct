@@ -2,30 +2,34 @@ package com.example.ct
 
 import android.content.Context
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.Serializable
 import java.net.HttpURLConnection
 import java.net.URL
+import javax.net.ssl.HttpsURLConnection
+
 // The listener is set in Cache class
 //interface WeatherDataListener {
 //    fun onWeatherDataReceived(weatherData: String)
 //}
 
 //TODO this class should be responsible for checking the weather, and then passing the info to the datasourcemanager
-class WeatherDataSource(private val cache: Cache, @Transient private val context: Context) :
-    DataSourceManager(cache, context), Serializable {
+class WeatherDataSource :
+    DataSourceManager(), Serializable {
     //    private var listener: WeatherDataListener? = null
 //    fun setWeatherDataListener(listener: WeatherDataListener) {
 //        this.listener = listener
 //    }
     // Loading weather data
-    override fun loadData(){
+    override fun loadData(context: Context){
         val apiUrl =
-            "http://api.weatherapi.com/v1/current.json?key=affd127b42314bc3b60220131233003&q=Glasgow"
+            "https://api.weatherapi.com/v1/current.json?key=affd127b42314bc3b60220131233003&q=Glasgow"
         val url = URL(apiUrl)
-        val connection = url.openConnection() as HttpURLConnection
+        val connection = url.openConnection() as HttpsURLConnection
         connection.requestMethod = "GET"
 
         val inputStream = InputStreamReader(connection.inputStream)
@@ -59,7 +63,7 @@ class WeatherDataSource(private val cache: Cache, @Transient private val context
     }
 
     override fun setCache(weatherIsGood : Any) {
-            cache.set(R.string.weather_is_good.toString(), weatherIsGood)
+            Cache.set(R.string.weather_is_good.toString(), weatherIsGood)
     }
 
 }

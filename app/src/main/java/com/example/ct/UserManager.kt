@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 class UserManager (user: User, private val context: Context) {
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+    private val editor : SharedPreferences.Editor = sharedPreferences.edit()
     //TODO modify this class to check if what type of user the user is
     // Initialize user types
     var userType: UserType = UserType.UNKNOWN
@@ -26,6 +27,7 @@ class UserManager (user: User, private val context: Context) {
             abs(walkingSpeed) < 1.5 -> UserType.FACILITATOR
             else -> UserType.SPARK
         }
+        editor.putString(R.string.user.toString(), userType.type).apply()
     }
     /*fun checkUserType(walkingSpeed: Double) {
         if (abs(walkingSpeed) < 0.5) {
@@ -43,8 +45,9 @@ class UserManager (user: User, private val context: Context) {
         }
     }*/
 
-    fun shouldSendRockMusicNotification(): Boolean {
-        return sharedPreferences.getBoolean(ROCK_MUSIC_NOTIFICATIONS_ENABLED, true)
+    fun shouldSendRockMusicNotification() {
+        editor.putBoolean(ROCK_MUSIC_NOTIFICATIONS_ENABLED, true).apply()
+//        return sharedPreferences.getBoolean(ROCK_MUSIC_NOTIFICATIONS_ENABLED, true)
     }
 
     fun setRockMusicNotificationsEnabled(enabled: Boolean) {

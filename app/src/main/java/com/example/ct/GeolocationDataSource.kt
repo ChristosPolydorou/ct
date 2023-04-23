@@ -18,18 +18,17 @@ import org.jsoup.Jsoup
 import java.io.Serializable
 
 
-class GeolocationDataSource(private val cache: Cache, @Transient private val context: Context) :
-    DataSourceManager(cache, context), Serializable {
+class GeolocationDataSource :
+    DataSourceManager(), Serializable {
 
     private val LOCATION_HOME = "location_home"
     private val LOCATION_NEAR_JOGGING_TRACK = "location_near_jogging_track"
     private val LOCATION_GET_OFF_BUS = "location_get_off_bus"
 
-    private val fusedLocationClient: FusedLocationProviderClient =
-        LocationServices.getFusedLocationProviderClient(context)
-
     @SuppressLint("MissingPermission")
-    override fun loadData() {
+    override fun loadData(context: Context) {
+         val fusedLocationClient: FusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(context)
 
         // Get the user's current location
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
@@ -137,9 +136,9 @@ class GeolocationDataSource(private val cache: Cache, @Transient private val con
         }
 
         // Save results to cache
-        cache.set(LOCATION_HOME, isNearHome)
-        cache.set(LOCATION_NEAR_JOGGING_TRACK, isNearJoggingTrack)
-        cache.set(LOCATION_GET_OFF_BUS, isNearBusStop)
+        Cache.set(LOCATION_HOME, isNearHome)
+        Cache.set(LOCATION_NEAR_JOGGING_TRACK, isNearJoggingTrack)
+        Cache.set(LOCATION_GET_OFF_BUS, isNearBusStop)
     }
 
     override fun setCache(cacheData: Any) {

@@ -13,29 +13,30 @@ import java.util.*
 
 class WalkReminderService : Service() {
     private lateinit var alarmManager: AlarmManager
-    private lateinit var pendingIntent1 : PendingIntent
-    private lateinit var pendingIntent2 : PendingIntent
+    private lateinit var pendingIntent1: PendingIntent
+    private lateinit var pendingIntent2: PendingIntent
     private val scope = CoroutineScope(Dispatchers.Default)
 
     private lateinit var user: User
     private lateinit var userManager: UserManager
     private lateinit var notificationManager: MyNotificationManager
     private lateinit var triggerManager: TriggerManager
-    private lateinit var cache: Cache
+//    private lateinit var cache: Cache
 
     private lateinit var weatherData: DataSourceManager
     private lateinit var calendarData: DataSourceManager
     private lateinit var locationData: DataSourceManager
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        user = User("signal")
+        user = User(UserType.SIGNAL)
         userManager = UserManager(user, this)
-        notificationManager = MyNotificationManager(this)
-        triggerManager = TriggerManager(userManager, notificationManager)
-        cache = Cache(this, triggerManager)
-        weatherData = WeatherDataSource(cache, this)
-        calendarData = CalendarDataSource(cache, this)
-        locationData = GeolocationDataSource(cache,  this)
+//        notificationManager = MyNotificationManager(this)
+//        triggerManager = TriggerManager(this)
+//        cache = Cache(this)
+        Cache.initializeCache(this)
+        weatherData = WeatherDataSource()
+//        calendarData = CalendarDataSource(cache, this)
+//        locationData = GeolocationDataSource(cache, this)
         // Check for location permission
 //        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
 //            == PackageManager.PERMISSION_GRANTED
@@ -52,40 +53,41 @@ class WalkReminderService : Service() {
         val notificationForService = notificationManagForService.sendServiceNotification()
         startForeground(1, notificationForService)
 
-        // Create an Intent for the alarm that updates data(weather, location etc.) every certain time
-        // and pass the instances to the Receiver class
-        val intent1 = Intent(this, WalkReminderReceiver::class.java).apply {
-            putExtra("cache", cache)
-            putExtra("weather", weatherData)
-//            putExtra("calender", calendarData)
-//            putExtra("location", locationData)
-        }
-        // Create an Intent for the alarm that triggers 5pm notification and pass the instances
-        val intent2 = Intent(this, WalkReminderReceiver::class.java).apply {
-            putExtra("cache", cache)
-            putExtra("weather", weatherData)
-//            putExtra("calender", calendarData)
-//            putExtra("location", locationData)
-        }
         scope.launch {
+            // Create an Intent for the alarm that updates data(weather, location etc.) every certain time
+            // and pass the instances to the Receiver class
+            val intent1 = Intent(applicationContext, WalkReminderReceiver::class.java).apply {
+//                putExtra("cache", cache)
+                putExtra("weather", weatherData)
+//            putExtra("calender", calendarData)
+//            putExtra("location", locationData)
+            }
+            // Create an Intent for the alarm that triggers 5pm notification and pass the instances
+            val intent2 = Intent(applicationContext, WalkReminderReceiver::class.java).apply {
+//                putExtra("cache", cache)
+                putExtra("weather", weatherData)
+//            putExtra("calender", calendarData)
+//            putExtra("location", locationData)
+            }
+
             // Get the AlarmManager service
             alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
             intent1.action = "Action_For_Load_Data"
-            pendingIntent1 = PendingIntent.getBroadcast(applicationContext, 0, intent1, 0)
+            pendingIntent1 = PendingIntent.getBroadcast(applicationContext, 0, intent1, PendingIntent.FLAG_IMMUTABLE)
 
             // TODO Setting the alarm to update data every certain time.
             var interval: Long = 60 * 1000
             var firstAlarmTime: Long = System.currentTimeMillis() + interval
             alarmManager.setRepeating(
                 AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                firstAlarmTime,
+                0,
                 interval,
                 pendingIntent1
             )
 
             intent2.action = "Action_For_Five_Pm"
-            pendingIntent2 = PendingIntent.getBroadcast(applicationContext, 0, intent2, 0)
+            pendingIntent2 = PendingIntent.getBroadcast(applicationContext, 0, intent2, PendingIntent.FLAG_IMMUTABLE)
 
             // TODO Setting the alarm to trigger at 5pm every day.
             val calendar = Calendar.getInstance()
@@ -111,9 +113,10 @@ class WalkReminderService : Service() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-        scope.cancel()
         stopReminderTimer()
+        scope.cancel()
+        super.onDestroy()
+
     }
 
 //    private fun stopWeatherUpdates() {

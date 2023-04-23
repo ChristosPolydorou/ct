@@ -4,35 +4,35 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 
 import android.content.SharedPreferences
+import android.util.Log
 import java.io.Serializable
 
 
 //TODO this class stores boolean variables for different situations, e.g. weatherGood, FivePm etc., the values for these are changed in the datasource manager
-class Cache (@Transient private val context: Context, @Transient private val triggerManager: TriggerManager) : Serializable {
-   @Transient var situationsCache: SharedPreferences = context.getSharedPreferences(
-        R.string.situations_cache.toString(), MODE_PRIVATE)
-    @Transient private val editor: SharedPreferences.Editor = situationsCache.edit()
-//    private val cacheMap = mutableMapOf<String, Any>()
+object Cache {
 
-    init {
+    private lateinit var situationsCache: SharedPreferences
+    private lateinit var  triggerManager: TriggerManager
+    fun initializeCache(context: Context){
+         situationsCache = context.getSharedPreferences(
+            R.string.situations_cache.toString(), MODE_PRIVATE)
+           triggerManager = TriggerManager(context)
 
         // Uniform key names are set in the strings.xml
         // If it's the first time open the sharedPreferences file
         if (!situationsCache.contains("is_first_time")){
             put("is_first_time", true)
             put(R.string.weather_is_good.toString(), false)
-            put("location_near".toString(), false)
+            put(R.string.location_near.toString(), false)
             put(R.string.five_pm.toString(), false)
             put(R.string.calendar_is_empty.toString(), false)
-            put(R.string.steps.toString(), 0)
+            put(R.string.steps.toString(), 0L)
             put(R.string.target.toString(), 0)
-
-            // Register a listener to watch every variables.
-            situationsCache.registerOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener {
-                    cachePref, key ->
-                triggerManager.checkTriggers(key, get(key))
-            })
         }
+        // Register a listener to watch every variables.
+         situationsCache.registerOnSharedPreferenceChangeListener { _, key ->
+             triggerManager.checkTriggers(key, get(key))
+         }
     }
 
     fun get(key: String): Any {
@@ -49,12 +49,16 @@ class Cache (@Transient private val context: Context, @Transient private val tri
 //        cacheMap[key] = value
         when(value){
             is Int -> {
-                editor.putInt(key, value)
-                editor.apply()
+                situationsCache.edit().putInt(key, value)
+                situationsCache.edit().apply()
             }
             is Boolean -> {
-                editor.putBoolean(key, value)
-                editor.apply()
+                situationsCache.edit().putBoolean(key, value)
+                situationsCache.edit().apply()
+            }
+            is Long -> {
+                situationsCache.edit().putLong(key, value)
+                situationsCache.edit().apply()
             }
         }
 
@@ -63,10 +67,27 @@ class Cache (@Transient private val context: Context, @Transient private val tri
     fun  set(key: String, value: Any) {
 //        cacheMap[key] = value
         put(key, value)
-        editor.apply()
+        situationsCache.edit().apply()
     }
 
+//     fun checkNull(context: Context){
+//        if(this.context==null){
+//            this.context = context
+//        }
+//        if (situationsCache == null){
+//            situationsCache = context.getSharedPreferences(R.string.situations_cache.toString(), MODE_PRIVATE)
+//            editor = situationsCache.edit()
+//        }
+//         if (triggerManager == null){
+//             triggerManager = TriggerManager(context)
+//         }
+//         // Register a listener to watch every variables.
+//         situationsCache.registerOnSharedPreferenceChangeListener { _, key ->
+//             triggerManager.checkTriggers(key, get(key))
+//         }
+//     }
+
     fun clear() {
-        editor.clear()
+        situationsCache.edit().clear()
     }
 }
