@@ -5,9 +5,11 @@ import android.content.Context
 import android.location.Location
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import okhttp3.*
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import java.io.Serializable
 
 
@@ -20,19 +22,16 @@ class GeolocationDataSource :
 
     @SuppressLint("MissingPermission")
     override fun loadData(context: Context) {
-        val scope = WalkReminderService.getScopeForLoadData()
-        scope.launch{
-            val fusedLocationClient: FusedLocationProviderClient =
-                LocationServices.getFusedLocationProviderClient(context)
+        val fusedLocationClient: FusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(context)
 
-            // Get the user's current location
-            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                if (location != null) {
-                    // User's location retrieved, proceed to check location criteria
-                    checkLocationCriteria(location)
-                } else {
-                    // Unable to retrieve user's location, handle error
-                }
+        // Get the user's current location
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                // User's location retrieved, proceed to check location criteria
+                checkLocationCriteria(location)
+            } else {
+                // Unable to retrieve user's location, handle error
             }
         }
 
@@ -69,45 +68,44 @@ class GeolocationDataSource :
         return res
     }*/
 
-    private fun checkIfBusStopNear(location: Location): Boolean {
-        val scope = WalkReminderService.getScopeForLoadData()
-        var isBusStopNearby = false
-        scope.launch{
-            val latitude = location.latitude
-            val longitude = location.longitude
-            val radius = 100
-            val overpassUrl = "http://overpass-api.de/api/interpreter?data=[out:json];(node[highway=bus_stop](around:$radius,$latitude,$longitude);way[highway=bus_stop](around:$radius,$latitude,$longitude);relation[highway=bus_stop](around:$radius,$latitude,$longitude););out;"
+    private fun checkIfBusStopNear(location: Location, scope: CoroutineScope): Boolean {
+        val latitude = location.latitude
+        val longitude = location.longitude
+        val radius = 100
+        val overpassUrl =
+            "https://overpass-api.de/api/interpreter?data=[out:json];(node[highway=bus_stop](around:$radius,$latitude,$longitude);way[highway=bus_stop](around:$radius,$latitude,$longitude);relation[highway=bus_stop](around:$radius,$latitude,$longitude););out;"
+        var isBusStopNearby: Boolean = false
+        scope.launch {
             val document = Jsoup.connect(overpassUrl).ignoreContentType(true).get()
-
             val busStopElements = document.select("element")
-             isBusStopNearby = busStopElements.isNotEmpty()
+            isBusStopNearby = busStopElements.isNotEmpty()
         }
         return isBusStopNearby
     }
 
 
-    private fun checkIfParkIsNear(location: Location): Boolean {
-        val scope = WalkReminderService.getScopeForLoadData()
+    private fun checkIfParkIsNear(location: Location, scope: CoroutineScope): Boolean {
         var isParkNearby = false
+        val latitude = location?.latitude ?: 0.0
+        val longitude = location?.longitude ?: 0.0
+        val radius = 100
+        val overpassUrl =
+            "https://overpass-api.de/api/interpreter?data=[out:json];(node[leisure=park](around:$radius,$latitude,$longitude);way[leisure=park](around:$radius,$latitude,$longitude);relation[leisure=park](around:$radius,$latitude,$longitude););out;"
         scope.launch {
-            val latitude = location?.latitude ?: 0.0
-            val longitude = location?.longitude ?: 0.0
-            val radius = 100
-            val overpassUrl = "http://overpass-api.de/api/interpreter?data=[out:json];(node[leisure=park](around:$radius,$latitude,$longitude);way[leisure=park](around:$radius,$latitude,$longitude);relation[leisure=park](around:$radius,$latitude,$longitude););out;"
             val document = Jsoup.connect(overpassUrl).ignoreContentType(true).get()
-
             val parkElements = document.select("element")
-             isParkNearby = parkElements.isNotEmpty()
+            isParkNearby = parkElements.isNotEmpty()
         }
+
         return isParkNearby
     }
 
 
-
     private fun checkLocationCriteria(location: android.location.Location) {
+        val scope = WalkReminderService.getScopeForLoadData()
         val homeLocation = android.location.Location("").apply {
-            latitude =  37.7749/* add latitude of user's home location */
-                longitude = -122.4194/* add longitude of user's home location */
+            latitude = 37.7749/* add latitude of user's home location */
+            longitude = -122.4194/* add longitude of user's home location */
         }
         /*val joggingTrackLocation = android.location.Location("").apply {
             latitude = 37.7694/* add latitude of nearest jogging track */
@@ -120,8 +118,11 @@ class GeolocationDataSource :
         }*/
 
         val isNearHome = location.distanceTo(homeLocation) < 500 // Distance in meters
-        val isNearJoggingTrack = checkIfParkIsNear(location)//location.distanceTo(joggingTrackLocation) < 1000 // Distance in meters
-        var isNearBusStop = checkIfBusStopNear(location)
+        val isNearJoggingTrack = checkIfParkIsNear(
+            location,
+            scope
+        )//location.distanceTo(joggingTrackLocation) < 1000 // Distance in meters
+        var isNearBusStop = checkIfBusStopNear(location, scope)
         /*for (item in busStopLocations){
             if(location.distanceTo(item) < 50){
                 isNearBusStop = true// Distance in meters
@@ -147,6 +148,7 @@ class GeolocationDataSource :
     override fun setCache(cacheData: Any) {
         // Cache already set in checkLocationCriteria method
     }
+
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1234
     }
