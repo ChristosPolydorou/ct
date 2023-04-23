@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -24,40 +25,44 @@ class WeatherDataSource :
 //    fun setWeatherDataListener(listener: WeatherDataListener) {
 //        this.listener = listener
 //    }
+
     // Loading weather data
     override fun loadData(context: Context){
-        val apiUrl =
-            "https://api.weatherapi.com/v1/current.json?key=affd127b42314bc3b60220131233003&q=Glasgow"
-        val url = URL(apiUrl)
-        val connection = url.openConnection() as HttpsURLConnection
-        connection.requestMethod = "GET"
+        val scope = WalkReminderService.getScopeForLoadData()
+        scope.launch {
+            val apiUrl =
+                "https://api.weatherapi.com/v1/current.json?key=affd127b42314bc3b60220131233003&q=Glasgow"
+            val url = URL(apiUrl)
+            val connection = url.openConnection() as HttpsURLConnection
+            connection.requestMethod = "GET"
 
-        val inputStream = InputStreamReader(connection.inputStream)
-        val bufferedReader = BufferedReader(inputStream)
-        val stringBuilder = StringBuilder()
-        var line: String?
+            val inputStream = InputStreamReader(connection.inputStream)
+            val bufferedReader = BufferedReader(inputStream)
+            val stringBuilder = StringBuilder()
+            var line: String?
 
-        while (bufferedReader.readLine().also { line = it } != null) {
-            stringBuilder.append(line)
-        }
-        bufferedReader.close()
-        inputStream.close()
+            while (bufferedReader.readLine().also { line = it } != null) {
+                stringBuilder.append(line)
+            }
+            bufferedReader.close()
+            inputStream.close()
 
-        connection.disconnect()
+            connection.disconnect()
 
-        // TODO("Check the new weather data if the weather is good or not then update cache.")
-        // Parse the JSON data
-        val json = JSONObject(stringBuilder.toString())
-        if(json!=null){
-            val current = json.getJSONObject("current")
+            // TODO("Check the new weather data if the weather is good or not then update cache.")
+            // Parse the JSON data
+            val json = JSONObject(stringBuilder.toString())
+            if(json!=null){
+                val current = json.getJSONObject("current")
 
-            // Check if the temperature, precipitation, and wind speed are good for a walk
-            val temperature = current.getDouble("temp_c")
-            val isRaining = current.getDouble("precip_mm") > 0
-            val windSpeed = current.getDouble("wind_kph")
+                // Check if the temperature, precipitation, and wind speed are good for a walk
+                val temperature = current.getDouble("temp_c")
+                val isRaining = current.getDouble("precip_mm") > 0
+                val windSpeed = current.getDouble("wind_kph")
 
-            var weatherIsGood = temperature > 15 && temperature < 25 && !isRaining && windSpeed < 10
-            setCache(weatherIsGood)
+                var weatherIsGood = temperature > 15 && temperature < 25 && !isRaining && windSpeed < 10
+                setCache(weatherIsGood)
+            }
         }
 
     }

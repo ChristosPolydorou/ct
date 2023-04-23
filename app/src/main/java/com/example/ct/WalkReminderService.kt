@@ -15,7 +15,16 @@ class WalkReminderService : Service() {
     private lateinit var alarmManager: AlarmManager
     private lateinit var pendingIntent1: PendingIntent
     private lateinit var pendingIntent2: PendingIntent
-    private val scope = CoroutineScope(Dispatchers.Default)
+    private val scopeForAlarm = CoroutineScope(Dispatchers.Default)
+
+    //scopeForLoadData is used for loading data from internet in the datasource classes
+    // to avoid blocking the main thread
+    companion object {
+        private val scopeForLoadData = CoroutineScope(Dispatchers.Default)
+        fun getScopeForLoadData(): CoroutineScope {
+            return scopeForLoadData
+        }
+    }
 
     private lateinit var user: User
     private lateinit var userManager: UserManager
@@ -53,7 +62,7 @@ class WalkReminderService : Service() {
         val notificationForService = notificationManagForService.sendServiceNotification()
         startForeground(1, notificationForService)
 
-        scope.launch {
+        scopeForAlarm.launch {
             // Create an Intent for the alarm that updates data(weather, location etc.) every certain time
             // and pass the instances to the Receiver class
             val intent1 = Intent(applicationContext, WalkReminderReceiver::class.java).apply {
@@ -113,16 +122,12 @@ class WalkReminderService : Service() {
     }
 
     override fun onDestroy() {
+        scopeForLoadData.cancel()
         stopReminderTimer()
-        scope.cancel()
+        scopeForAlarm.cancel()
         super.onDestroy()
 
     }
-
-//    private fun stopWeatherUpdates() {
-//        weatherTimer.cancel()
-//        weatherTimer.purge()
-//    }
 
     private fun stopReminderTimer() {
         alarmManager.cancel(pendingIntent1)
