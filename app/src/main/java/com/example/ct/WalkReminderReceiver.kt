@@ -25,19 +25,16 @@ class WalkReminderReceiver : BroadcastReceiver() {
 
         }
 
-//        val cache = getSerializable("cache", Cache::class.java) as Cache
         val weatherData = getSerializable("weather", WeatherDataSource::class.java) as WeatherDataSource
-//        val calendarData = intent.getSerializableExtra("calendar", CalendarDataSource::class.java)
-//        val locationData = intent.getSerializableExtra("location", GeolocationDataSource::class.java)
+        val calendarData = getSerializable("calendar", CalendarDataSource::class.java) as CalendarDataSource
+        val locationData = getSerializable("location", GeolocationDataSource::class.java) as GeolocationDataSource
         if (intent.action == "Action_For_Load_Data") {
-//            cache.checkNull(context)
-            Cache.set(R.string.steps.toString(), System.currentTimeMillis())
+            Cache.put("test", System.currentTimeMillis()) // for testing
             weatherData!!.loadData(context)
-//            calendarData!!.loadData()
-//            locationData!!.loadData()
+            calendarData!!.loadData(context)
+            locationData!!.loadData(context)
         } else if (intent.action == "Action_For_Five_Pm") {
-//            cache.checkNull(context)
-//            cache!!.set(R.string.five_pm.toString(), true)
+            Cache!!.put(R.string.five_pm.toString(), true)
         }
 
     }

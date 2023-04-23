@@ -2,10 +2,9 @@ package com.example.ct
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
-
 import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.util.Log
-import java.io.Serializable
 
 
 //TODO this class stores boolean variables for different situations, e.g. weatherGood, FivePm etc., the values for these are changed in the datasource manager
@@ -13,6 +12,7 @@ object Cache {
 
     private lateinit var situationsCache: SharedPreferences
     private lateinit var  triggerManager: TriggerManager
+    private lateinit var listener: OnSharedPreferenceChangeListener
     fun initializeCache(context: Context){
          situationsCache = context.getSharedPreferences(
             R.string.situations_cache.toString(), MODE_PRIVATE)
@@ -26,13 +26,14 @@ object Cache {
             put(R.string.location_near.toString(), false)
             put(R.string.five_pm.toString(), false)
             put(R.string.calendar_is_empty.toString(), false)
-            put(R.string.steps.toString(), 0L)
+            put(R.string.steps.toString(), 0)
             put(R.string.target.toString(), 0)
         }
-        // Register a listener to watch every variables.
-         situationsCache.registerOnSharedPreferenceChangeListener { _, key ->
-             triggerManager.checkTriggers(key, get(key))
-         }
+        // Register a listener to watch every variables
+        listener = OnSharedPreferenceChangeListener { situationsCache, key ->
+            triggerManager.checkTriggers(key, get(key))
+        }
+         situationsCache.registerOnSharedPreferenceChangeListener (listener)
     }
 
     fun get(key: String): Any {
@@ -45,28 +46,19 @@ object Cache {
 
     }
 
-    private fun  put(key: String, value: Any) {
+     fun  put(key: String, value: Any) {
 //        cacheMap[key] = value
         when(value){
             is Int -> {
                 situationsCache.edit().putInt(key, value)
-                situationsCache.edit().apply()
             }
             is Boolean -> {
                 situationsCache.edit().putBoolean(key, value)
-                situationsCache.edit().apply()
             }
             is Long -> {
                 situationsCache.edit().putLong(key, value)
-                situationsCache.edit().apply()
             }
         }
-
-    }
-
-    fun  set(key: String, value: Any) {
-//        cacheMap[key] = value
-        put(key, value)
         situationsCache.edit().apply()
     }
 

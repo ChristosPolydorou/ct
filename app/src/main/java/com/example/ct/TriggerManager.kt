@@ -14,7 +14,7 @@ class TriggerManager(
 //    private val userManager: UserManager,
 //    private val notificationManager: MyNotificationManager,
 //    private val cache: Cache
-) : Serializable {
+)  {
     private val notificationManager: MyNotificationManager = MyNotificationManager(context)
     private val sharedPreferences = context.getSharedPreferences("user_preferences", Context.MODE_PRIVATE)
     var userType = sharedPreferences.getString(R.string.user.toString(), UserType.UNKNOWN.type)
@@ -54,7 +54,7 @@ class TriggerManager(
                     else -> "End of work means time for yourself! Let's take a quick walk to cool down after a long day."
                 }
                 triggered = value.toString().toBoolean()
-
+                Cache.put(R.string.five_pm.toString(), false)
             }
             R.string.calendar_is_empty.toString() -> {
                 triggered = value.toString().toBoolean()

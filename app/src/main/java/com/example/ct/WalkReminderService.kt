@@ -39,13 +39,10 @@ class WalkReminderService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         user = User(UserType.SIGNAL)
         userManager = UserManager(user, this)
-//        notificationManager = MyNotificationManager(this)
-//        triggerManager = TriggerManager(this)
-//        cache = Cache(this)
         Cache.initializeCache(this)
         weatherData = WeatherDataSource()
-//        calendarData = CalendarDataSource(cache, this)
-//        locationData = GeolocationDataSource(cache, this)
+        calendarData = CalendarDataSource()
+        locationData = GeolocationDataSource()
         // Check for location permission
 //        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
 //            == PackageManager.PERMISSION_GRANTED
@@ -66,19 +63,16 @@ class WalkReminderService : Service() {
             // Create an Intent for the alarm that updates data(weather, location etc.) every certain time
             // and pass the instances to the Receiver class
             val intent1 = Intent(applicationContext, WalkReminderReceiver::class.java).apply {
-//                putExtra("cache", cache)
                 putExtra("weather", weatherData)
-//            putExtra("calender", calendarData)
-//            putExtra("location", locationData)
+            putExtra("calendar", calendarData)
+            putExtra("location", locationData)
             }
             // Create an Intent for the alarm that triggers 5pm notification and pass the instances
             val intent2 = Intent(applicationContext, WalkReminderReceiver::class.java).apply {
-//                putExtra("cache", cache)
                 putExtra("weather", weatherData)
-//            putExtra("calender", calendarData)
-//            putExtra("location", locationData)
+            putExtra("calendar", calendarData)
+            putExtra("location", locationData)
             }
-
             // Get the AlarmManager service
             alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -87,10 +81,9 @@ class WalkReminderService : Service() {
 
             // TODO Setting the alarm to update data every certain time.
             var interval: Long = 60 * 1000
-            var firstAlarmTime: Long = System.currentTimeMillis() + interval
             alarmManager.setRepeating(
                 AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                0,
+                5000,
                 interval,
                 pendingIntent1
             )

@@ -68,7 +68,7 @@ class WeatherDataSource :
     }
 
     override fun setCache(weatherIsGood : Any) {
-            Cache.set(R.string.weather_is_good.toString(), weatherIsGood)
+            Cache.put(R.string.weather_is_good.toString(), weatherIsGood)
     }
 
 }

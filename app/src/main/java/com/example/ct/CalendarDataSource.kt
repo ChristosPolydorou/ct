@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.provider.CalendarContract
+import kotlinx.coroutines.launch
 import java.io.Serializable
 import java.util.*
 
@@ -56,13 +57,17 @@ class CalendarDataSource : DataSourceManager(),
 
 
     override fun loadData(context: Context) {
-        val events = getCalendarEvents(context)
-        val calendarIsEmpty = events.isEmpty()
+        val scope = WalkReminderService.getScopeForLoadData()
+        var calendarIsEmpty:Boolean = false
+        scope.launch {
+            val events = getCalendarEvents(context)
+             calendarIsEmpty = events.isEmpty()
+        }
         setCache(calendarIsEmpty)
     }
 
     override fun setCache(calendarIsEmpty : Any) {
-        Cache.set(R.string.calendar_is_empty.toString(), calendarIsEmpty)
+        Cache.put(R.string.calendar_is_empty.toString(), calendarIsEmpty)
     }
 }
 
