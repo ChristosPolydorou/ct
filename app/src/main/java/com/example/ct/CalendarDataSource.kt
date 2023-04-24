@@ -58,12 +58,13 @@ class CalendarDataSource : DataSourceManager(),
 
     override fun loadData(context: Context) {
         val scope = WalkReminderService.getScopeForLoadData()
-        var calendarIsEmpty:Boolean = false
+
         scope.launch {
+            var calendarIsEmpty:Boolean = false
             val events = getCalendarEvents(context)
              calendarIsEmpty = events.isEmpty()
+            setCache(calendarIsEmpty)
         }
-        setCache(calendarIsEmpty)
     }
 
     override fun setCache(calendarIsEmpty : Any) {

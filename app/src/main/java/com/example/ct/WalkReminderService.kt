@@ -28,9 +28,6 @@ class WalkReminderService : Service() {
 
     private lateinit var user: User
     private lateinit var userManager: UserManager
-    private lateinit var notificationManager: MyNotificationManager
-    private lateinit var triggerManager: TriggerManager
-//    private lateinit var cache: Cache
 
     private lateinit var weatherData: DataSourceManager
     private lateinit var calendarData: DataSourceManager
@@ -43,16 +40,6 @@ class WalkReminderService : Service() {
         weatherData = WeatherDataSource()
         calendarData = CalendarDataSource()
         locationData = GeolocationDataSource()
-        // Check for location permission
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-//            == PackageManager.PERMISSION_GRANTED
-//        ) {
-//            // Notify by weather
-////            startWeatherUpdates()
-////            startReminderTimer()
-//            // Notify by location
-//        }
-//        fivePmNotification()
 
         //  Create a notification for the foreground service
         val notificationManagForService = MyNotificationManager(this)

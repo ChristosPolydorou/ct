@@ -14,6 +14,8 @@ import com.google.android.gms.location.*
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 
 
 private const val PERMISSIONS_REQUEST_CODE = 123
@@ -56,11 +58,11 @@ class MainActivity : AppCompatActivity() {
         val permissions = arrayOf(
             Manifest.permission.READ_CALENDAR,
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_NOTIFICATION_POLICY
+//            Manifest.permission.ACCESS_NOTIFICATION_POLICY
         )
         val checkPermission = hasPermissions(this, permissions)
         if (checkPermission.isNotEmpty()) {
-            ActivityCompat.requestPermissions(this, permissions, PERMISSIONS_REQUEST_CODE)
+            ActivityCompat.requestPermissions(this, checkPermission, PERMISSIONS_REQUEST_CODE)
         }
 
         // Check and request location permissions
@@ -68,6 +70,22 @@ class MainActivity : AppCompatActivity() {
 //            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
             startLocationUpdates()
         }
+
+
+//        val launcher = rememberLauncherForActivityResult(
+//            contract = ActivityResultContracts.RequestPermission(),
+//            onResult = { isGranted ->
+//                if (!isGranted) {
+//                    if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+//                        rationalPermissionOpenDialog.value = true
+//                    } else {
+//                        permissionOpenDialog.value = true
+//                    }
+//                } else {
+//                    hasNotificationPermission = isGranted
+//                }
+//            }
+//        )
     }
 
 
@@ -105,25 +123,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun hasPermissions(mainActivity: MainActivity, permissions: Array<String>): Array<String> {
             if (ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
+            == PackageManager.PERMISSION_GRANTED
         ) {
-            // Permission is not granted
+            // Permission is  granted
                 permissions.toMutableList().removeAt(1)
         }
         if (ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.READ_CALENDAR)
-            != PackageManager.PERMISSION_GRANTED
+            == PackageManager.PERMISSION_GRANTED
         ) {
-            // Permission is not granted
-            // Request the permission
+            // Permission is  granted
             permissions.toMutableList().removeAt(0)
         }
-        if (ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_NOTIFICATION_POLICY)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            // Permission is not granted
-            // Request the permission
-            permissions.toMutableList().removeAt(2)
-        }
+//        if (ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.POST_NOTIFICATIONS)
+//            != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            // Permission is  granted
+//            permissions.toMutableList().removeAt(2)
+////            val permissionLauncher = rememberLauncherForActivityResult()
+//            // Sets up permissions request launcher.
+//        }
 
         return permissions
     }

@@ -61,27 +61,9 @@ object Cache {
                 situationsCache.edit().putLong(key, value).apply()
             }
         }
-//         Log.d("test", situationsCache.getLong("test", 0L).toString())
-//         Log.d(R.string.weather_is_good.toString(), situationsCache.contains(R.string.weather_is_good.toString()).toString())
-
     }
 
-//     fun checkNull(context: Context){
-//        if(this.context==null){
-//            this.context = context
-//        }
-//        if (situationsCache == null){
-//            situationsCache = context.getSharedPreferences(R.string.situations_cache.toString(), MODE_PRIVATE)
-//            editor = situationsCache.edit()
-//        }
-//         if (triggerManager == null){
-//             triggerManager = TriggerManager(context)
-//         }
-//         // Register a listener to watch every variables.
-//         situationsCache.registerOnSharedPreferenceChangeListener { _, key ->
-//             triggerManager.checkTriggers(key, get(key))
-//         }
-//     }
+
 
     fun clear() {
         situationsCache.edit().clear()

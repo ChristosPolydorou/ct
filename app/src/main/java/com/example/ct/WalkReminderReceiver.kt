@@ -29,7 +29,7 @@ class WalkReminderReceiver : BroadcastReceiver() {
         val calendarData = getSerializable("calendar", CalendarDataSource::class.java) as CalendarDataSource
         val locationData = getSerializable("location", GeolocationDataSource::class.java) as GeolocationDataSource
         if (intent.action == "Action_For_Load_Data") {
-            Cache.put("test", System.currentTimeMillis()) // for testing
+//            Cache.put("test", System.currentTimeMillis()) // for testing
             weatherData!!.loadData(context)
             calendarData!!.loadData(context)
             locationData!!.loadData(context)

@@ -9,6 +9,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -42,7 +43,8 @@ class MyNotificationManager(private val context: Context) {
 
     @SuppressLint("MissingPermission")
     fun sendTakeAWalkNotification(message: String) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_NOTIFICATION_POLICY)
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
             != PackageManager.PERMISSION_GRANTED
         ) {
             // Permission is not granted
@@ -52,6 +54,7 @@ class MyNotificationManager(private val context: Context) {
             .setSmallIcon(R.drawable.ic_walk_notification_foreground)
             .setContentTitle("Take a Walk")
             .setContentText(message)
+//            .setStyle(NotificationCompat.BigTextStyle().bigText(message))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
 //        with(NotificationManagerCompat.from(context)) {

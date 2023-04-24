@@ -34,6 +34,7 @@ class TriggerManager(
 
 
     fun checkTriggers(key: String, value: Any) {
+
         var triggered = false
         var message = ""
         when (key) {
@@ -65,7 +66,7 @@ class TriggerManager(
                     else -> "You don't have anything planned today! Why not go for a walk then?"
                 }
             }
-            R.string.location_near.toString() -> {
+            "location_near_jogging_track" -> {
                 triggered = value.toString().toBoolean()
                 message = when (userType) {
                     UserType.SIGNAL.type -> "There is a park nearby! Why not take a short walk to explore it?"
@@ -73,10 +74,6 @@ class TriggerManager(
                     UserType.SPARK.type -> "There is a park nearby! Why not take a long walk to explore it?"
                     else -> "There is a park nearby! Why not take a walk to explore it?"
                 }
-            }
-            else -> {
-                message = ("This is a test trigger.")
-                triggered = true
             }
         }
 
