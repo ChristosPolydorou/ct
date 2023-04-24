@@ -60,11 +60,9 @@ class WeatherDataSource :
                 val isRaining = current.getDouble("precip_mm") > 0
                 val windSpeed = current.getDouble("wind_kph")
 
-//                var weatherIsGood = temperature > 15 && temperature < 25 && !isRaining && windSpeed < 10
-                Log.d("temperature:", temperature.toString())
-                Log.d("isRaining:", isRaining.toString())
-                Log.d("windSpeed:", windSpeed.toString())
-                var weatherIsGood = temperature > 5 && temperature < 25  && windSpeed < 30
+                var weatherIsGood = temperature > 15 && temperature < 25 && !isRaining && windSpeed < 10
+
+//                var weatherIsGood = temperature > 5 && temperature < 25  && windSpeed < 30
                 setCache(weatherIsGood)
             }
         }

@@ -89,12 +89,17 @@ class GeolocationDataSource :
         val latitude = location?.latitude ?: 0.0
         val longitude = location?.longitude ?: 0.0
         val radius = 100
+        val area = '('+ (latitude - radius).toString()+','+ (longitude - radius).toString()+ ',' +(latitude + radius).toString()+ ',' +(longitude + radius).toString()+",s=0.01,n=0.01,w=0.01,e=0.01)"
         val overpassUrl =
-            "https://overpass-api.de/api/interpreter?data=[out:json];(node[leisure=park](around:$radius,$latitude,$longitude);way[leisure=park](around:$radius,$latitude,$longitude);relation[leisure=park](around:$radius,$latitude,$longitude););out;"
+            "https://overpass-api.de/api/interpreter?data=[out:json];way[leisure=park]$area;out;"
+//        "https://overpass-api.de/api/interpreter?data=[out:json];node[leisure=park](-139.1716183,75.401715,60.8283817,275.40171499999997,s=0.01,n=0.01,w=0.01,e=0.01);out;"
+//            "https://overpass-api.de/api/interpreter?data=[out:json];(node[leisure=park](around:$radius,$latitude,$longitude);way[leisure=park](around:$radius,$latitude,$longitude);relation[leisure=park](around:$radius,$latitude,$longitude););out;"
         scope.launch {
+
             val document = Jsoup.connect(overpassUrl).ignoreContentType(true).get()
             val parkElements = document.select("element")
             isParkNearby = parkElements.isNotEmpty()
+            Cache.put(LOCATION_NEAR_JOGGING_TRACK, isParkNearby)
         }
 
         return isParkNearby
@@ -141,7 +146,7 @@ class GeolocationDataSource :
 
         // Save results to cache
         Cache.put(LOCATION_HOME, isNearHome)
-        Cache.put(LOCATION_NEAR_JOGGING_TRACK, isNearJoggingTrack)
+//        Cache.put(LOCATION_NEAR_JOGGING_TRACK, isNearJoggingTrack)
         Cache.put(LOCATION_GET_OFF_BUS, isNearBusStop)
     }
 

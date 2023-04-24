@@ -1,37 +1,17 @@
 package com.example.ct
 
+import android.app.LocaleConfig
+import android.app.LocaleManager
 import android.content.Context
-import android.content.SharedPreferences
-import android.location.LocationListener
-import java.io.Serializable
+import java.security.AccessController.getContext
 
-//interface TriggerListener {
-//    fun onTrigger(message: String)
-//}
 //TODO this class manages several types of triggers. Everytime when the variables from the cache change, the triggers check if their conditions are met. if so, they call the notification manager with a specific message. furthermore, this class 'watches' the variables from the user manager, which decides whether the user is spark, facilitator, or signal. depending on this, the messages are different
 class TriggerManager(
     context: Context,
-//    private val userManager: UserManager,
-//    private val notificationManager: MyNotificationManager,
-//    private val cache: Cache
 )  {
     private val notificationManager: MyNotificationManager = MyNotificationManager(context)
     private val sharedPreferences = context.getSharedPreferences("user_preferences", Context.MODE_PRIVATE)
     var userType = sharedPreferences.getString(R.string.user.toString(), UserType.UNKNOWN.type)
-    /*private val calendarEmptyTrigger = CalendarEmptyTrigger()*/
-    /*init {
-        calendarEmptyTrigger.setTriggerListener(object : TriggerListener {
-            override fun onTrigger(message: String) {
-                sendNotification(message)
-            }
-        })
-    }*/
-//    private var listener: TriggerListener? = null
-
-//    private fun sendNotification(message: String) {
-//        listener?.onTrigger(message)
-//    }
-
 
     fun checkTriggers(key: String, value: Any) {
 
@@ -46,6 +26,7 @@ class TriggerManager(
                     else -> "The weather is great! Let's go for a walk and use it."
                 }
                 triggered = value.toString().toBoolean()
+//                refreshCache(R.string.weather_is_good.toString())
             }
             R.string.five_pm.toString() -> {
                 message = when (userType) {
@@ -55,7 +36,7 @@ class TriggerManager(
                     else -> "End of work means time for yourself! Let's take a quick walk to cool down after a long day."
                 }
                 triggered = value.toString().toBoolean()
-                Cache.put(R.string.five_pm.toString(), false)
+//                refreshCache(R.string.five_pm.toString())
             }
             R.string.calendar_is_empty.toString() -> {
                 triggered = value.toString().toBoolean()
@@ -65,6 +46,7 @@ class TriggerManager(
                     UserType.SPARK.type -> "You don't have anything planned today! Why not go for a long walk then?"
                     else -> "You don't have anything planned today! Why not go for a walk then?"
                 }
+//                refreshCache(R.string.calendar_is_empty.toString())
             }
             "location_near_jogging_track" -> {
                 triggered = value.toString().toBoolean()
@@ -74,6 +56,7 @@ class TriggerManager(
                     UserType.SPARK.type -> "There is a park nearby! Why not take a long walk to explore it?"
                     else -> "There is a park nearby! Why not take a walk to explore it?"
                 }
+//                refreshCache( "location_near_jogging_track")
             }
         }
 
@@ -93,5 +76,12 @@ class TriggerManager(
         if (shouldNotify) {
             notificationManager.sendRockMusicNotification()
         }
+    }
+
+    private fun refreshCache (key:String){
+        val currentContext = getContext() as Context
+         val cachePreferences = currentContext.getSharedPreferences(R.string.situations_cache.toString(),
+            Context.MODE_PRIVATE)
+        cachePreferences.edit().putBoolean(key, false).apply()
     }
 }

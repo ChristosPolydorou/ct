@@ -80,10 +80,13 @@ class WalkReminderService : Service() {
 
             // TODO Setting the alarm to trigger at 5pm every day.
             val calendar = Calendar.getInstance()
-            calendar.timeInMillis = System.currentTimeMillis()
             calendar[Calendar.HOUR_OF_DAY] = 17
             calendar[Calendar.MINUTE] = 0
             calendar[Calendar.SECOND] = 0
+            // If it's already past 5pm, set the alarm for tomorrow
+            if (calendar.timeInMillis < System.currentTimeMillis()) {
+                calendar.add(Calendar.DAY_OF_YEAR, 1)
+            }
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP,
                 calendar.timeInMillis,
