@@ -12,8 +12,10 @@ import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 
 class MyNotificationManager(private val context: Context) {
+    private lateinit var notificationManager: NotificationManager
     companion object {
         const val CHANNEL_ID = "take_a_walk_channel"
         const val NOTIFICATION_ID = 1
@@ -33,32 +35,30 @@ class MyNotificationManager(private val context: Context) {
                 description = descriptionText
             }
 
-            val notificationManager: NotificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+             notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
     }
 
     @SuppressLint("MissingPermission")
     fun sendTakeAWalkNotification(message: String) {
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_NOTIFICATION_POLICY
-            ) != PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_NOTIFICATION_POLICY)
+            != PackageManager.PERMISSION_GRANTED
         ) {
-            // Handle the missing permission scenario here.
+            // Permission is not granted
             return
         }
-
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_walk_notification_foreground)
             .setContentTitle("Take a Walk")
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
-        with(NotificationManagerCompat.from(context)) {
-            notify(NOTIFICATION_ID, builder.build())
-        }
+//        with(NotificationManagerCompat.from(context)) {
+//            notify(NOTIFICATION_ID, builder.build())
+//        }
+//        NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build())
+        notificationManager.notify(NOTIFICATION_ID, builder.build())
     }
 
     fun sendRockMusicNotification() {

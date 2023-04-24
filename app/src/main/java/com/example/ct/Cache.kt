@@ -40,7 +40,9 @@ object Cache {
 //        return cacheMap[key] as T
         return if(key==R.string.steps.toString() || key==R.string.target.toString()){
             situationsCache.getInt(key, -1)
-        }else{
+        }else if(key=="test"){
+            situationsCache.getLong(key, 0L)
+        } else{
             situationsCache.getBoolean(key, false)
         }
 
@@ -50,16 +52,18 @@ object Cache {
 //        cacheMap[key] = value
         when(value){
             is Int -> {
-                situationsCache.edit().putInt(key, value)
+                situationsCache.edit().putInt(key, value).apply()
             }
             is Boolean -> {
-                situationsCache.edit().putBoolean(key, value)
+                situationsCache.edit().putBoolean(key, value).apply()
             }
             is Long -> {
-                situationsCache.edit().putLong(key, value)
+                situationsCache.edit().putLong(key, value).apply()
             }
         }
-        situationsCache.edit().apply()
+//         Log.d("test", situationsCache.getLong("test", 0L).toString())
+//         Log.d(R.string.weather_is_good.toString(), situationsCache.contains(R.string.weather_is_good.toString()).toString())
+
     }
 
 //     fun checkNull(context: Context){
@@ -81,5 +85,6 @@ object Cache {
 
     fun clear() {
         situationsCache.edit().clear()
+        situationsCache.unregisterOnSharedPreferenceChangeListener(listener)
     }
 }

@@ -55,7 +55,8 @@ class MainActivity : AppCompatActivity() {
 
         val permissions = arrayOf(
             Manifest.permission.READ_CALENDAR,
-            Manifest.permission.ACCESS_FINE_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_NOTIFICATION_POLICY
         )
         val checkPermission = hasPermissions(this, permissions)
         if (checkPermission.isNotEmpty()) {
@@ -115,6 +116,13 @@ class MainActivity : AppCompatActivity() {
             // Permission is not granted
             // Request the permission
             permissions.toMutableList().removeAt(0)
+        }
+        if (ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_NOTIFICATION_POLICY)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission is not granted
+            // Request the permission
+            permissions.toMutableList().removeAt(2)
         }
 
         return permissions

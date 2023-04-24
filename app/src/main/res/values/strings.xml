@@ -9,4 +9,6 @@
     <string name="location_near">LocationNear</string>
     <string name="mapbox_access_token">sk.eyJ1IjoibmluYWJybyIsImEiOiJjbGdjcnQwZ2QwZXVuM3RzeGtsd3IwbmFrIn0.cb21VHlW5FK1rifVJOiHiw</string>
     <string name="user">User</string>
+    <string name="default_notification_channel_id">take_a_walk_channel</string>
+
 </resources>
